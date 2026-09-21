@@ -1,0 +1,17 @@
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# editors
+.vscode/
+.idea/
+*.swp
+
+# python (devserver.py)
+__pycache__/
+*.py[cod]
+
+# local scratch
+*.log
+.tmp/
