@@ -79,7 +79,7 @@
 
   var rows = [
     { node: $("#elementRow"),     buttons: [] },   // big, in the stage
-    { node: $("#elementRowMini"), buttons: [] }    // small, in the header
+    { node: $("#elementRailRow"), buttons: [] }    // the fixed rail on the left
   ];
 
   function buildRow(row) {
@@ -116,8 +116,8 @@
       var i = row.buttons.indexOf(document.activeElement);
       if (i < 0) return;
       var next = null;
-      if (ev.key === "ArrowRight") next = (i + 1) % row.buttons.length;
-      if (ev.key === "ArrowLeft")  next = (i - 1 + row.buttons.length) % row.buttons.length;
+      if (ev.key === "ArrowRight" || ev.key === "ArrowDown") next = (i + 1) % row.buttons.length;
+      if (ev.key === "ArrowLeft"  || ev.key === "ArrowUp")   next = (i - 1 + row.buttons.length) % row.buttons.length;
       if (ev.key === "Home")       next = 0;
       if (ev.key === "End")        next = row.buttons.length - 1;
       if (next === null) return;
@@ -295,14 +295,6 @@
     ScrollTrigger.addEventListener("refreshInit", function () { measure(); placeMark(); });
     onSelectionChange = function () { measure(); placeMark(); };
 
-    // the compact switcher takes over once the stage has had its say
-    ScrollTrigger.create({
-      trigger: "#stage",
-      start: "bottom bottom",
-      onEnter:     function () { document.body.classList.add("stage-done"); },
-      onLeaveBack: function () { document.body.classList.remove("stage-done"); }
-    });
-
     // gentle reveals for everything below the stage — one trigger each (rather
     // than a batch) so anything already scrolled past still ends up visible
     var reveals = $$(".section__head, .intro__body, .thread, .listing__item, .note, .join__form");
@@ -343,6 +335,39 @@
     window.addEventListener("resize", set);
   }
 
+  /* The left rail shows from the intro onwards.
+
+     This reads the intro's position on scroll rather than using an
+     IntersectionObserver: an observer only fires when the intersection state
+     *changes*, so jumping straight from the footer back to the top (an anchor
+     link, or a restored scroll position) never fires at all and leaves the
+     rail stuck open. A rAF-throttled scroll check is always right, whichever
+     way you arrived. Plain DOM, so it also works with GSAP absent or motion
+     reduced — the rail is navigation, not decoration. */
+  function initRail() {
+    var rail = $("#elementRail");
+    var intro = $("#intro");
+    if (!rail || !intro) return;
+
+    var queued = false;
+
+    function update() {
+      queued = false;
+      var top = intro.getBoundingClientRect().top;
+      document.body.classList.toggle("rail-on", top < window.innerHeight * 0.7);
+    }
+
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(update);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  }
+
   function initForm() {
     var form = $("#joinForm");
     var note = $("#formNote");
@@ -359,6 +384,7 @@
   clearFilter();
   PranaliSite.init();
   initForm();
+  initRail();
   initMotion();
   trackHeights();
   select(readStored() || DEFAULT_ID, false);

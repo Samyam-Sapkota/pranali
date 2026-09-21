@@ -111,7 +111,6 @@ img { max-width: 100%; display: block; }
 /* explicit order so the brand stays left and the rest gathers right,
    whichever of these a given page happens to include */
 .header__brand          { order: 1; margin-right: auto; }
-.elements__row--mini    { order: 2; }
 .header__member         { order: 3; }
 .nav-toggle             { order: 4; }
 .site-nav               { order: 5; }
@@ -333,27 +332,98 @@ img { max-width: 100%; display: block; }
 /* while the travelling mark is standing in for it, the real one steps aside */
 .element-btn.is-ghosted .icon-mask { opacity: 0 !important; transform: none; }
 
-/* --- compact switcher in the header, after the stage has played ---------- */
+/* ==========================================================================
+   The left rail — switch elements from anywhere below the opening screen
+   ========================================================================== */
 
-.elements__row--mini {
-  gap: 0.75rem;
+.element-rail {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  z-index: 40;
+  transform: translate(-100%, -50%);   /* parked off-screen until the intro */
   opacity: 0;
-  transform: translateY(-6px);
   pointer-events: none;
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  transition: transform 0.55s var(--ease), opacity 0.45s var(--ease);
+  padding: 0.6rem 0.75rem 0.6rem 0.5rem;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border: 1px solid var(--rule);
+  border-left: 0;
 }
-body.stage-done .elements__row--mini {
+
+body.rail-on .element-rail {
+  transform: translate(0, -50%);
   opacity: 1;
-  transform: none;
   pointer-events: auto;
 }
-.elements__row--mini .element-btn { --icon: 1.55rem; padding: 0.2rem; }
-.elements__row--mini .element-btn__label,
-.elements__row--mini .element-btn__dot { display: none; }
-.elements__row--mini .element-btn[aria-pressed="true"] .icon-mask { transform: none; }
 
-@media (max-width: 860px) {
-  .elements__row--mini { display: none; }
+.elements__row--rail {
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1.2vh, 0.9rem);
+}
+
+/* Unselected sit small and quiet; the chosen one is large and full-strength,
+   so the current element is readable at a glance from the edge of the screen. */
+.elements__row--rail .element-btn {
+  --icon: 1.5rem;
+  gap: 0.15rem;
+  padding: 0.3rem 0.2rem;
+}
+/* the size change has to be transitioned on the box, not on --icon: an
+   unregistered custom property animates discretely, so it would jump */
+.elements__row--rail .icon-mask {
+  opacity: 0.45;
+  transition: width 0.4s var(--ease), height 0.4s var(--ease),
+              opacity 0.4s var(--ease);
+}
+.elements__row--rail .element-btn:hover .icon-mask { opacity: 0.8; transform: none; }
+
+.elements__row--rail .element-btn[aria-pressed="true"] {
+  --icon: 2.9rem;
+}
+.elements__row--rail .element-btn[aria-pressed="true"] .icon-mask {
+  opacity: 1;
+  transform: none;
+}
+
+/* only the chosen one is named — the rail stays narrow */
+.elements__row--rail .element-btn__label {
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease), opacity 0.3s var(--ease);
+}
+.elements__row--rail .element-btn[aria-pressed="true"] .element-btn__label {
+  max-height: 1.4em;
+  opacity: 1;
+}
+.elements__row--rail .element-btn__dot { display: none; }
+
+/* The rail lives in the page's left margin. That margin is only wide enough
+   from about 1232px up (shell is 1180px + gutter, rail is ~74px); below that
+   the rail would sit on top of the text, so it becomes a bar along the bottom
+   instead — same buttons, same behaviour, no overlap. */
+@media (max-width: 1239px) {
+  .element-rail {
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, 100%);
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-bottom: 0;
+  }
+  body.rail-on .element-rail { transform: translate(-50%, 0); }
+
+  .elements__row--rail { flex-direction: row; gap: clamp(0.5rem, 3vw, 1.5rem); }
+  .elements__row--rail .element-btn { --icon: 1.35rem; }
+  .elements__row--rail .element-btn[aria-pressed="true"] { --icon: 2.2rem; }
 }
 
 /* ==========================================================================
@@ -831,7 +901,7 @@ body.stage-done .elements__row--mini {
 .no-motion .stage__pin { --fade: 0; }
 .no-motion .stage__copy { opacity: 1; }
 .no-motion .stage__hint { display: none; }
-.no-motion .elements__row--mini { display: none; }
+/* the rail is navigation, so it stays even with motion turned off */
 .no-motion .reveal { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
