@@ -73,18 +73,68 @@ img { max-width: 100%; display: block; }
   padding-inline: var(--gutter);
 }
 
-.skip-link {
-  /* clipped rather than pushed off-canvas, so it can't widen the page */
-  position: absolute; left: 0; top: 0; z-index: 100;
-  clip-path: inset(50%);
-  background: var(--ink); color: var(--paper);
-  padding: 0.6rem 1rem; font-size: 0.8rem;
-}
-.skip-link:focus { clip-path: none; }
-
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Step-down arrow — bottom left, moves to the next section
+   ========================================================================== */
+
+.scroll-next {
+  position: fixed;
+  left: clamp(0.75rem, 1.6vw, 1.5rem);
+  bottom: clamp(0.75rem, 1.6vw, 1.5rem);
+  z-index: 45;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  color: var(--accent);
+  cursor: pointer;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease),
+              border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.scroll-next svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  animation: nudge-down 2.6s ease-in-out infinite;
+}
+
+.scroll-next:hover {
+  border-color: var(--accent);
+  background: var(--paper);
+}
+
+/* nothing below to go to — it gets out of the way at the end of the page */
+.scroll-next.is-done {
+  opacity: 0;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+}
+
+@keyframes nudge-down {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(2.5px); }
+}
+
+@media (max-width: 1239px) {
+  /* the element rail is a centred bottom bar at this width; the arrow sits
+     in the corner beside it, and shrinks a little to stay out of its way */
+  .scroll-next { width: 2.1rem; height: 2.1rem; }
+  .scroll-next svg { width: 0.95rem; height: 0.95rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-next svg { animation: none; }
 }
 
 /* ==========================================================================
