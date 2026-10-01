@@ -263,8 +263,11 @@
      animates discretely — it would snap between seats rather than travel.   */
 
   var bloom = { p: 0 };
-  var STAGGER = 0.07;                      // per-node offset, in progress units
-  var SPAN = 1 - STAGGER * 3;              // so the last node still reaches 1
+  var STAGGER = 0.07;   // per-node offset, in progress units
+  /* The last node is offset by (n-1) * STAGGER, so the usable span is what is
+     left after that. Getting this wrong by one leaves the final element —
+     Air — stalled short of its seat at full scroll. */
+  var SPAN = 1 - STAGGER * (ELEMENTS.length - 1);
 
   function mandalaRadius() {
     var m = $("#mandala");

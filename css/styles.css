@@ -591,6 +591,12 @@ body.rail-on .element-rail {
   will-change: transform, opacity;
 }
 
+/* The four outer marks start folded into the centre. Without this they paint
+   once, stacked on the spiral, before the first animation frame runs.
+   js/main.js seats them — including on the no-motion path, where it writes
+   an inline opacity that wins over this. */
+.node:not(.node--space) { opacity: 0; }
+
 .node .element-btn {
   --icon: clamp(2.2rem, 7vh, 3.6rem);
   padding: 0.4rem;
