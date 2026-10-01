@@ -10,8 +10,8 @@
 
 .btn--small {
   padding: 0.6rem 1.35rem;
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
+  font-size: 0.73rem;
+  letter-spacing: 0.12em;
 }
 
 .btn--ghost {
@@ -55,7 +55,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--muted);
@@ -84,7 +84,7 @@
 .member-badge__out {
   background: none; border: 0; padding: 0;
   font: inherit;
-  font-size: 0.62rem;
+  font-size: 0.69rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--muted);
@@ -129,9 +129,9 @@
 .garden-band__where {
   display: inline-block;
   margin-right: 0.6rem;
-  font-size: 0.66rem;
+  font-size: 0.73rem;
   text-transform: uppercase;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.18em;
   color: var(--structure);
 }
 
@@ -188,9 +188,9 @@
   padding: 0.3rem 0.8rem;
   background: var(--green);
   color: var(--paper);
-  font-size: 0.62rem;
+  font-size: 0.69rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
 }
 
 .free-course__title {
@@ -253,7 +253,7 @@
   border-color: var(--interactive);
   color: var(--paper);
 }
-.filter-btn__count { font-size: 0.66rem; opacity: 0.6; }
+.filter-btn__count { font-size: 0.73rem; opacity: 0.6; }
 
 .catalogue__free-note {
   margin: -0.5rem 0 1.8rem;
@@ -306,9 +306,9 @@
 
 .course-card__cat {
   margin: 0 0 0.7rem;
-  font-size: 0.6rem;
+  font-size: 0.67rem;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   color: var(--structure);
 }
 
@@ -352,7 +352,7 @@
 }
 
 .course-card__badge {
-  font-size: 0.62rem;
+  font-size: 0.69rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--muted);
@@ -395,9 +395,9 @@
   padding: 0.25rem 0.75rem;
   background: var(--green);
   color: var(--paper);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
 }
 
 .plan__name { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem); margin-bottom: 0.25em; }
@@ -444,7 +444,7 @@
   text-align: center;
   font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   color: var(--green);
   border: 1px dashed var(--green);
 }
@@ -548,9 +548,9 @@
 .join__cats { border: 0; margin: 0 0 1.8rem; padding: 0; }
 .join__cats legend {
   padding: 0;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   margin-bottom: 0.3rem;
 }
@@ -590,9 +590,9 @@
 }
 .join__payment-title {
   margin: 0 0 0.4rem;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   color: var(--muted);
 }
 .join__payment-note { margin: 0; font-size: 0.8rem; color: var(--muted); }
@@ -631,9 +631,9 @@
 }
 
 .course-hero__crumb {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   margin-bottom: 1.2rem;
 }
@@ -645,9 +645,9 @@
   padding: 0.3rem 0.8rem;
   border: 1px solid var(--muted);
   color: var(--muted);
-  font-size: 0.62rem;
+  font-size: 0.69rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
 }
 .course-hero__flag.is-open { border-color: var(--green); color: var(--green); }
 
@@ -680,9 +680,9 @@
   border-top: 1px solid var(--rule);
 }
 .course-facts dt {
-  font-size: 0.62rem;
+  font-size: 0.69rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   color: var(--muted);
   margin-bottom: 0.25rem;
 }
@@ -738,7 +738,7 @@
   transition: color 0.25s var(--ease);
 }
 .lesson__len {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--muted);
