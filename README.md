@@ -85,6 +85,28 @@ One course — *Reading a Field* — is **always free and public**, with no logi
 so visitors can judge the platform before subscribing. A reduced-rate/bursary option is
 handled by request to a person, not by an automated form.
 
+## Palette
+
+| Role | Tone | Hex | Where it is used |
+| --- | --- | --- | --- |
+| Primary base | Tree Green | `#0F5E36` | Headings and primary focal elements — the free-course flag, the featured plan, membership status |
+| Primary accent | Crimson Red | `#DC143C` | Interactive states and calls to action — buttons, hovers, active filters, focus rings |
+| Secondary accent | Burgundy Brown | `#763939` | Structural borders, metadata, eyebrow labels and subheadings |
+| Background | Warm off-white | `#FAF7F2` | The canvas, with `#F3EDE3` for raised panels |
+
+Components refer to role tokens (`--heading`, `--interactive`, `--structure`) rather
+than to colours directly, so the palette can move in one place.
+
+Two notes on the implementation:
+
+- `--crimson-ink` (`#C8102E`) exists because brand crimson reads 4.29:1 on the warm
+  panel tone, just under the 4.5 needed for body-size text. Links and small labels use
+  the deeper tone; fills and buttons keep the brand crimson.
+- The five elements still tint their own surfaces — the travelling mark, the stage
+  wash, the rail — but no longer repaint the site chrome. Earth is the brand green and
+  Space the brand burgundy; Air and Fire are deepened from their original tones so a
+  selected element's label stays legible.
+
 ## Credits
 
 Photographs in `images/stock/` are Unsplash licence, except `courses_pranali.jpg` and

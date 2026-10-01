@@ -11,15 +11,21 @@
 
   // Left to right, as drawn. Space (the spiral) sits in the middle and is the
   // default. `num` is the source image; swap to .svg in iconSrc() only.
+  //
+  // These tint the element surfaces only — the travelling mark, the stage
+  // wash, the rail — not the site chrome, which follows the brand palette in
+  // css/styles.css. Earth is the brand Tree Green and Space the brand
+  // Burgundy; Air and Fire are deepened from their original tones so the
+  // selected element's label still clears 4.5:1 on the warm backgrounds.
   var ELEMENTS = [
     {
       id: "air", num: 1, name: "Air", sanskrit: "वायु", roman: "Vayu",
-      accent: "#5b7f8c", accentSoft: "#e4edf0",
+      accent: "#4a6b76", accentSoft: "#e4edf0",   // deepened to stay legible at label size
       lead: "Breath, voice and movement — language, music and everything that travels between us."
     },
     {
       id: "fire", num: 2, name: "Fire", sanskrit: "अग्नि", roman: "Agni",
-      accent: "#c0532a", accentSoft: "#f7e6dc",
+      accent: "#a8441f", accentSoft: "#f7e6dc",   // deepened to stay legible at label size
       lead: "Transformation and refusal — the heat of justice, and the courage a changing climate asks of us."
     },
     {
@@ -34,7 +40,7 @@
     },
     {
       id: "earth", num: 5, name: "Earth", sanskrit: "पृथ्वी", roman: "Prithvi",
-      accent: "#0f4e36", accentSoft: "#e2ece7",
+      accent: "#0f5e36", accentSoft: "#e2ece7",   // the brand Tree Green
       lead: "Soil, seed and belonging — land, food, and the knowledge held by the people who stay."
     }
   ];
