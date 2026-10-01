@@ -218,7 +218,6 @@
 
   var bloomCopy      = $("#bloomCopy");
   var bloomName      = $("#bloomName");
-  var bloomLead      = $("#bloomLead");
   var bloomSanskrit  = $("#bloomSanskrit");
   var bloomPrinciple = $("#bloomPrinciple");
 
@@ -246,7 +245,6 @@
       bloomSanskrit.textContent  = el.sanskrit + " · " + el.roman;
       bloomName.textContent      = el.name;
       bloomPrinciple.textContent = el.principle;
-      bloomLead.textContent      = el.lead;
       bloomCopy.classList.remove("is-swapping");
     }, reduceMotion ? 0 : 160);
 
@@ -274,8 +272,11 @@
     return m ? m.getBoundingClientRect().width / 2 : 0;
   }
 
+  /* Must stay in step with the arc media query in css/styles.css. A short
+     landscape phone has the width for a compass but nowhere near the height,
+     so height counts here as much as width. */
   function onArc() {
-    return window.matchMedia("(max-width: 700px)").matches;
+    return window.matchMedia("(max-width: 700px), (max-height: 620px)").matches;
   }
 
   function seatFor(el) {

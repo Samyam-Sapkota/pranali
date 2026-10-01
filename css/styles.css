@@ -526,11 +526,13 @@ body.rail-on .element-rail {
   height: 100vh;
   height: 100svh;
   padding-top: var(--header-h);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1rem, 3vh, 2.5rem);
+  /* A centring grid with exactly one item in flow: the mandala. The copy is
+     taken out of flow below, so it cannot shift the circle off centre. */
+  display: grid;
+  place-items: center;
+
+  /* the height actually available under the sticky header */
+  --avail: calc(100svh - var(--header-h));
 }
 
 .bloom__tint {
@@ -545,11 +547,18 @@ body.rail-on .element-rail {
 
 /* --------------------------------------------------------- the mandala */
 
+/* Sized from the space under the header, not from the whole viewport: at 54vh
+   the circle was taller than the room it had, which pushed the top node up
+   behind the header. Each factor below is the largest that still lets the
+   bottom node clear the copy band on the shortest screen in its tier, with
+   the node overhang counted (a mark sits centred on the ring, so it reaches
+   beyond it by half its own height). */
 .mandala {
+  --mandala: min(calc(var(--avail) * 0.58), 74vw);
   position: relative;
   z-index: 2;
-  width: min(54vh, 78vw);
-  height: min(54vh, 78vw);
+  width: var(--mandala);
+  height: var(--mandala);
   flex: none;
   display: grid;
   place-items: center;
@@ -625,9 +634,17 @@ body.rail-on .element-rail {
 
 /* ----------------------------------------------------------- the words */
 
+/* Out of flow deliberately. It is invisible until the bloom finishes, and
+   while it was in flow its reserved height pushed the mandala off centre even
+   though nothing was drawn there. It shares the bottom band with the scroll
+   hint, which has already faded out by the time this fades in. */
 .bloom__copy {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(1.25rem, 4vh, 2.75rem);
   z-index: 3;
+  margin-inline: auto;
   text-align: center;
   max-width: 46ch;
   padding-inline: var(--gutter);
@@ -651,14 +668,8 @@ body.rail-on .element-rail {
   font-style: italic;
   font-size: clamp(0.98rem, 0.95rem + 0.4vw, 1.2rem);
   color: var(--structure);
-  margin: 0 0 0.7em;
-}
-.bloom__lead {
-  font-size: clamp(0.98rem, 0.94rem + 0.35vw, 1.12rem);
-  color: var(--ink-soft);
   margin: 0;
 }
-
 .bloom__hint {
   position: absolute;
   bottom: clamp(1.25rem, 4vh, 2.5rem);
@@ -675,38 +686,44 @@ body.rail-on .element-rail {
 /* copy cross-fade when a different element is chosen */
 .bloom__sanskrit,
 .bloom__name,
-.bloom__principle,
-.bloom__lead {
+.bloom__principle {
   transition: opacity 0.18s var(--ease);
 }
 .bloom__copy.is-swapping .bloom__sanskrit,
 .bloom__copy.is-swapping .bloom__name,
-.bloom__copy.is-swapping .bloom__principle,
-.bloom__copy.is-swapping .bloom__lead {
+.bloom__copy.is-swapping .bloom__principle {
   opacity: 0;
 }
 
 /* --------------------------------------------------- smaller viewports */
 
-@media (max-width: 700px) {
-  /* the arc fallback: the mandala widens and flattens, so the four marks
-     have room along the lower curve with the spiral above them */
-  .mandala {
-    width: min(42vh, 86vw);
-    height: min(42vh, 86vw);
-  }
-  .node .element-btn { --icon: clamp(1.9rem, 6vh, 2.8rem); }
+/* Shorter viewports: the circle gives way before the words do. */
+@media (max-height: 900px) {
+  .mandala { --mandala: min(calc(var(--avail) * 0.44), 74vw); }
+}
+@media (max-height: 780px) {
+  .mandala { --mandala: min(calc(var(--avail) * 0.40), 70vw); }
+  .bloom__name { font-size: clamp(1.7rem, 5vw, 2.4rem); }
+}
+@media (max-height: 620px) {
+  .bloom__principle { display: none; }   /* the name carries it on a letterbox screen */
+}
+@media (max-height: 480px) {
+  .bloom__sanskrit { display: none; }
+  .bloom__name { font-size: clamp(1.3rem, 4vw, 1.8rem); }
+  /* a landscape phone has ~300px to work with: the circle gets small or the
+     bottom mark lands on the name */
+  .mandala { --mandala: min(calc(var(--avail) * 0.46), 60vw); }
+  .node .element-btn { --icon: clamp(1.5rem, 5vh, 2.1rem); }
 }
 
-@media (max-height: 660px) {
-  .mandala { width: min(42vh, 60vw); height: min(42vh, 60vw); }
-  .bloom__name { font-size: clamp(1.7rem, 5vw, 2.4rem); }
-  .bloom__lead { font-size: 0.92rem; }
-}
-@media (max-height: 560px) {
-  .mandala { width: min(34vh, 44vw); height: min(34vh, 44vw); }
-  .bloom__principle,
-  .bloom__lead { display: none; }   /* the name carries it on a letterbox screen */
+/* The arc fallback. Width alone is not the test: a landscape phone has the
+   width for a compass and nowhere near the height. Keep this selector in step
+   with onArc() in js/main.js. Because the arc only reaches 0.68r downward it
+   can afford a larger circle than the compass can. */
+@media (max-width: 700px), (max-height: 620px) {
+  .mandala { --mandala: min(calc(var(--avail) * 0.60), 76vw); }
+  .node .element-btn { --icon: clamp(1.9rem, 6vh, 2.8rem); }
 }
 
 

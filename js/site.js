@@ -54,7 +54,10 @@ var PranaliSite = (function () {
 
     var member = PranaliMembership.get();
     if (!member) {
-      slot.innerHTML = '<a class="member-badge member-badge--join" href="courses.html#pricing">Join</a>';
+      /* "Membership", not "Join" — the primary nav already has a Join link
+         pointing at the newsletter, and two identical words in one bar read
+         as a duplicate rather than as two different destinations. */
+      slot.innerHTML = '<a class="member-badge member-badge--join" href="courses.html#pricing">Membership</a>';
       return;
     }
 
