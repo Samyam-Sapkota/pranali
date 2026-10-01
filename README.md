@@ -13,6 +13,9 @@ Asian community, learning and cultural space.
 Front end only. **No backend yet** — the backend will be chosen once the design is
 settled. Plain HTML, CSS and JavaScript; no build step and no framework.
 
+Built to the *Pranali Website Design Brief & Technical Specification* in `docs/`.
+Typography is Alegreya throughout, per that brief.
+
 ## Running it
 
 ```bash
@@ -55,9 +58,15 @@ images/stock/     photographs — Unsplash licence, plus Pranali's own garden
 
 ### The five elements
 
-Left to right, matching what each mark depicts: **Air · Fire · Space · Water · Earth**,
-with Space (the spiral) in the centre and selected by default. Choosing one re-tints the
-page, swaps the hero copy, and filters the cards below to that strand.
+Order and compass directions follow the CEO brief (`docs/`): **Earth (West) · Water (East)
+· Space (Centre) · Fire (South) · Air (North)**. The home page opens on the spiral alone —
+unmanifest potential — and clicking, tapping or scrolling it blooms the four other marks
+outward to their compass points, with the spiral remaining at centre as Space. Below 700px
+the compass becomes a fluid arc, since there is no room for a full one.
+
+Choosing an element re-tints its own surfaces, swaps the hero copy, and filters the pillars
+below. Placement is read from each element's `direction` in `js/data.js`, so the layout can
+be re-aimed from one field.
 
 The marks are rendered as CSS masks rather than `<img>`, so they take the element's
 colour and stay crisp while the scroll animation scales them. Swapping the PNGs for SVGs
@@ -74,16 +83,36 @@ prototype. A static page collecting either would look exactly like the real thin
 nowhere safe to put it. When a real backend arrives, sign-in and payment move there and
 `js/auth.js` is deleted rather than extended.
 
-## Membership model (as designed)
+## Information architecture
 
-| Tier | Price | Access |
+Seven knowledge hubs and two operational arms, under the five elemental pillars, per the
+brief. Defined once in `PRANALI_HUBS` (`js/data.js`) and rendered on the home page.
+
+| Pillar | Hubs and arms |
+| --- | --- |
+| Earth · West | Sustainable Product Ecosystem · Regenerate Landscape |
+| Water · East | Ecological Courses · Publications |
+| Space · Centre | Access & Membership *(operational arm)* |
+| Fire · South | Gatherings & Workshops · Retreats & Festivals |
+| Air · North | Policy and Action · Projects and Activism *(arm)* |
+
+## Membership model
+
+One **Member** tier against a **Free Public** tier, across the brief's four content areas:
+
+| Area | Free public | Member |
 | --- | --- | --- |
-| Two Threads | $9/month, billed annually at $96 | Any 2 course categories, community access, one live session per season |
-| Whole Weave | $19/month, billed annually at $190 | All five categories, monthly live sessions, downloadable resources, full community access |
+| Advocacy & Publications | Newsletters, media clips, core manifestos | Full downloads of manuals, research papers, books |
+| Courses & Learning | Introductory previews and syllabus overviews | Unrestricted full infield and online modules |
+| Events & Gatherings | Public calendars and civic project summaries | Priority booking for dining, retreats, festivals |
+| Services & Consultations | Overview of consulting frameworks | Direct portal for enquiries and onboarding |
 
 One course — *Reading a Field* — is **always free and public**, with no login or payment,
-so visitors can judge the platform before subscribing. A reduced-rate/bursary option is
-handled by request to a person, not by an automated form.
+so visitors can judge the platform before joining. A reduced-rate/bursary option is handled
+by request to a person, not by an automated form.
+
+> **The brief names no price.** $19/month billed annually at $190 is carried forward from
+> an earlier spec and still needs the CEO's confirmation.
 
 ## Palette
 

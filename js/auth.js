@@ -41,37 +41,18 @@ var PranaliMembership = (function () {
 
     isMember: function () { return !!read(); },
 
-    /** Pretend to take a subscription. No payment, no account, no network. */
+    /** Pretend to take a membership. No payment, no account, no network. */
     subscribe: function (details) {
-      var plan = pranaliPlanById(details.planId);
+      var plan = pranaliPlanById(details.planId) || PRANALI_PLANS[0];
       if (!plan) return null;
-
-      var categories;
-      if (plan.categoryLimit === null) {
-        categories = PRANALI_CATEGORIES.map(function (c) { return c.id; });
-      } else {
-        categories = (details.categories || []).slice(0, plan.categoryLimit);
-      }
 
       var member = {
         name: details.name || "Member",
         email: details.email || "",
         planId: plan.id,
-        categories: categories,
         startedAt: new Date().toISOString(),
         demo: true
       };
-      write(member);
-      return member;
-    },
-
-    /** Change the two chosen categories on the lower tier. */
-    setCategories: function (categories) {
-      var member = read();
-      if (!member) return null;
-      var plan = pranaliPlanById(member.planId);
-      if (!plan || plan.categoryLimit === null) return member;
-      member.categories = categories.slice(0, plan.categoryLimit);
       write(member);
       return member;
     },
@@ -85,27 +66,19 @@ var PranaliMembership = (function () {
 
     /**
      * Can the current visitor open this course?
-     * The free course is true for everybody, logged in or not.
+     * The brief has one Member tier, so this is simply: is it public, or are
+     * they a member. The always-free course is true for everybody.
      */
     canAccess: function (course) {
       if (!course) return false;
       if (course.free) return true;
-
-      var member = read();
-      if (!member) return false;
-
-      var plan = pranaliPlanById(member.planId);
-      if (!plan) return false;
-      if (plan.categoryLimit === null) return true;
-
-      return member.categories.indexOf(course.category) !== -1;
+      return !!read();
     },
 
     /** Why access was refused — drives the message on the paywall. */
     reason: function (course) {
       if (!course || course.free) return null;
-      if (!read()) return "no-membership";
-      return this.canAccess(course) ? null : "wrong-categories";
+      return read() ? null : "no-membership";
     },
 
     onChange: function (fn) { listeners.push(fn); }

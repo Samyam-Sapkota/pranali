@@ -67,32 +67,32 @@
 
 <main>
 
-<!-- ======================== ELEMENT STAGE ======================== -->
-<section class="stage" id="stage" aria-label="Choose an element">
-  <div class="stage__pin">
-    <div class="stage__tint" aria-hidden="true"></div>
+<!-- ===================== THE SPIRAL BLOOM =====================
+     Initial state is the spiral alone — unmanifest potential. Clicking,
+     tapping or scrolling it blooms the four other elements outward to their
+     compass points, with the spiral remaining at the centre as Space.
+     Placement comes from each element's `direction` in js/data.js. -->
+<section class="bloom" id="bloom" aria-label="Pancha Pranali — the five elements">
+  <div class="bloom__pin">
+    <div class="bloom__tint" aria-hidden="true"></div>
 
-    <!-- the five, as you first meet them -->
-    <div class="stage__chooser" id="stageChooser">
-      <p class="elements__eyebrow">Pancha Pranali — five ways in</p>
-      <ul class="elements__row" id="elementRow" aria-label="The five elements">
+    <div class="mandala" id="mandala">
+      <svg class="mandala__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <circle cx="100" cy="100" r="99" />
+      </svg>
+      <ul class="mandala__nodes" id="mandalaNodes" aria-label="The five elements">
         <!-- filled by js/main.js -->
       </ul>
     </div>
 
-    <!-- where the chosen mark comes to rest, and what it has to say -->
-    <div class="stage__center">
-      <div class="stage__slot" id="stageSlot">
-        <span class="icon-mask stage__mark" id="stageMark" aria-hidden="true"></span>
-      </div>
-      <div class="stage__copy" id="stageCopy">
-        <p class="stage__sanskrit" id="stageSanskrit">आकाश · Akasha</p>
-        <h1 class="stage__name" id="stageName">Space</h1>
-        <p class="stage__lead" id="stageLead">The pause between things — silence, spirit, and the room a community needs to become itself.</p>
-      </div>
+    <div class="bloom__copy" id="bloomCopy">
+      <p class="bloom__sanskrit" id="bloomSanskrit">आकाश · Akasha</p>
+      <h1 class="bloom__name" id="bloomName">Space</h1>
+      <p class="bloom__principle" id="bloomPrinciple">Whole, interconnectedness and openness for emergence</p>
+      <p class="bloom__lead" id="bloomLead">The pause between things — silence, spirit, and the room a community needs to become itself.</p>
     </div>
 
-    <p class="stage__hint" id="stageHint">Scroll</p>
+    <p class="bloom__hint" id="bloomHint">Touch the spiral, or scroll</p>
   </div>
 </section>
 
@@ -120,26 +120,20 @@
   </figcaption>
 </figure>
 
-<!-- ========================== THREADS ========================== -->
-<section class="section threads" id="threads">
+<!-- ========================== PILLARS ==========================
+     Seven knowledge hubs and two operational arms, under the five elemental
+     pillars. Rendered from PRANALI_HUBS in js/data.js. -->
+<section class="section pillars" id="pillars">
   <div class="shell">
     <header class="section__head">
-      <p class="section__label">The living threads</p>
-      <h2 class="section__title">Nine threads, one weave</h2>
+      <p class="section__label">The work, by element</p>
+      <h2 class="section__title">Five pillars, nine arms</h2>
       <p class="filter-note" id="filterNote" aria-live="polite"></p>
     </header>
 
-    <ul class="threads__grid" id="threadsGrid">
-      <li class="thread" data-element="earth air"><span class="thread__num">01</span><h3>Community</h3><p>Circles that meet often enough to become obligations — potlucks, repair days, listening rooms, grief circles.</p></li>
-      <li class="thread" data-element="earth space"><span class="thread__num">02</span><h3>Indigenous knowledge</h3><p>Seed keepers, weavers, herbalists and oral historians teaching on their own terms, paid as the experts they are.</p></li>
-      <li class="thread" data-element="water earth"><span class="thread__num">03</span><h3>Ecology</h3><p>Watershed walks, soil work, river mapping — learning a place by the life it can still hold.</p></li>
-      <li class="thread" data-element="fire"><span class="thread__num">04</span><h3>Climate justice</h3><p>Who pays, who decides, who is asked to move. Organising work grounded in the floodplain, not the conference hall.</p></li>
-      <li class="thread" data-element="space"><span class="thread__num">05</span><h3>Spirituality</h3><p>Practice without sales pitch — silence, chant, breath and the long South Asian argument about what a self is.</p></li>
-      <li class="thread" data-element="earth water"><span class="thread__num">06</span><h3>Food</h3><p>Millets, ferments, monsoon cooking and the politics of the plate. We think best with our hands in the dough.</p></li>
-      <li class="thread" data-element="air fire"><span class="thread__num">07</span><h3>Culture</h3><p>Music, film, textile and the printed page — contemporary work that argues with tradition instead of curating it.</p></li>
-      <li class="thread" data-element="air space"><span class="thread__num">08</span><h3>Learning</h3><p>Slow cohorts, apprenticeships and reading groups. No certificates. Attendance measured in conversations.</p></li>
-      <li class="thread" data-element="space water"><span class="thread__num">09</span><h3>Retreats</h3><p>Weeks away in the hills and the delta, where the schedule is thin enough for something to actually change.</p></li>
-    </ul>
+    <div class="pillars__list" id="pillarsList">
+      <!-- filled by js/main.js -->
+    </div>
   </div>
 </section>
 

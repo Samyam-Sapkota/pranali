@@ -30,7 +30,6 @@
 
   var cat = pranaliCategoryById(course.category);
   var unlocked = PranaliMembership.canAccess(course);
-  var why = PranaliMembership.reason(course);
 
   /* ------------------------------------------------------------- header */
 
@@ -124,25 +123,16 @@
       '</li>';
     }).join("");
 
-    var wallTitle, wallCopy, wallActions;
-
-    if (why === "wrong-categories") {
-      var plan = PranaliMembership.plan();
-      wallTitle = "Not in your two categories";
-      wallCopy = "Your " + esc(plan ? plan.name : "membership") + " covers two categories, and " +
-        esc(cat ? cat.name : "this one") + " is not currently one of them. You can swap your " +
-        "categories, or move up to full access.";
-      wallActions =
-        '<a class="btn" href="courses.html#pricing">Change or upgrade</a>' +
-        '<a class="link-plain" href="course.html?id=' + esc(PRANALI_FREE_COURSE_ID) + '">Read the free course</a>';
-    } else {
-      wallTitle = "This course is for members";
-      wallCopy = "Membership opens the full lesson material, the discussion around it, and the live " +
-        "sessions with teachers. One course stays free and public for anyone who wants to see how we work first.";
-      wallActions =
-        '<a class="btn" href="courses.html#pricing">See membership — from $9/month</a>' +
-        '<a class="link-plain" href="course.html?id=' + esc(PRANALI_FREE_COURSE_ID) + '">Start the free course instead</a>';
-    }
+    /* With the brief's single Member tier there is only one reason to be
+       here: not a member yet. The category-mismatch wall went with the
+       two-tier model. */
+    var wallTitle = "This course is for members";
+    var wallCopy = "Membership opens the full learning modules, the manuals and research behind " +
+      "them, and priority booking on gatherings and retreats. One course stays free and public " +
+      "for anyone who wants to see how we work first.";
+    var wallActions =
+      '<a class="btn" href="courses.html#pricing">See what membership opens</a>' +
+      '<a class="link-plain" href="course.html?id=' + esc(PRANALI_FREE_COURSE_ID) + '">Start the free course instead</a>';
 
     body = '' +
     '<div class="shell course-body">' +

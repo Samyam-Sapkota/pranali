@@ -16,38 +16,183 @@ var PRANALI_CATEGORIES = [
     blurb: "How people actually hold things in common, and what it costs them." }
 ];
 
-var PRANALI_PLANS = [
+/* ==========================================================================
+   The five elements — Pancha Pranali
+   --------------------------------------------------------------------------
+   Order and compass directions are the brief's: Earth, Water, Space, Fire,
+   Air. `num` is the source image; the CEO's own labelled key confirms the
+   mapping (1 Air, 2 Fire, 3 Space, 4 Water, 5 Earth).
+
+   NOTE ON THE COMPASS: the brief's text states Earth = West and Fire = South
+   twice, but the mandala image on page 3 shows them the other way round. We
+   follow the text. If that is wrong, swap the two `direction` values here and
+   nothing else needs to change — the hero reads placement from this field.
+
+   The accents tint the element surfaces only (the marks, the stage wash, the
+   rail), not the site chrome, which follows the brand palette. Earth is the
+   brand Tree Green and Space the brand Burgundy; Air and Fire are deepened
+   from their original tones so a selected label clears 4.5:1 on warm panels.
+   ========================================================================== */
+
+var PRANALI_ELEMENTS = [
   {
-    id: "tier1",
-    name: "Two Threads",
-    monthly: 9,
-    yearly: 96,
-    categoryLimit: 2,
-    summary: "Pick any two categories and go deep.",
-    includes: [
-      "Full access to any 2 course categories of your choice",
-      "Community discussion access",
-      "One live session per season",
-      "Change your two categories once a year"
-    ]
+    id: "earth", num: 5, name: "Earth", sanskrit: "पृथ्वी", roman: "Bhumi",
+    direction: "West", principle: "Equanimity, value and distribution",
+    accent: "#0f5e36", accentSoft: "#e2ece7",
+    lead: "Soil, seed and belonging — land, food, and the knowledge held by the people who stay."
   },
   {
-    id: "tier2",
-    name: "Whole Weave",
+    id: "water", num: 4, name: "Water", sanskrit: "जल", roman: "Jal",
+    direction: "East", principle: "Fluidity, grounding and clarity with depth and stillness",
+    accent: "#2f6b8f", accentSoft: "#e2ecf3",
+    lead: "Flow, care and memory — rivers, monsoons, and the long patience of tending something alive."
+  },
+  {
+    id: "space", num: 3, name: "Space", sanskrit: "आकाश", roman: "Akasha",
+    direction: "Centre", principle: "Whole, interconnectedness and openness for emergence",
+    accent: "#763939", accentSoft: "#f0e7e2",
+    lead: "The pause between things — silence, spirit, and the room a community needs to become itself."
+  },
+  {
+    id: "fire", num: 2, name: "Fire", sanskrit: "अग्नि", roman: "Agni",
+    direction: "South", principle: "Perception, reception and relationships",
+    accent: "#a8441f", accentSoft: "#f7e6dc",
+    lead: "Transformation and refusal — the heat of justice, and the courage a changing climate asks of us."
+  },
+  {
+    id: "air", num: 1, name: "Air", sanskrit: "वायु", roman: "Vayu",
+    direction: "North", principle: "Ideas to completion, compassion in motion",
+    accent: "#4a6b76", accentSoft: "#e4edf0",
+    lead: "Breath, voice and movement — language, music and everything that travels between us."
+  }
+];
+
+/* ==========================================================================
+   Knowledge hubs and operational arms, under the five elemental pillars
+   Seven hubs plus two operational arms (Access & Membership, and Projects
+   and Activism), which is how the brief's nine entries reconcile with its
+   "7 core knowledge hubs and operational arms".
+   ========================================================================== */
+
+var PRANALI_HUBS = [
+  {
+    element: "earth", kind: "hub",
+    title: "Sustainable Product Ecosystem",
+    blurb: "An e-commerce space for earth-aligned food products, organic clothing and circular home appliances.",
+    status: "in development"
+  },
+  {
+    element: "earth", kind: "hub",
+    title: "Regenerate Landscape",
+    blurb: "Design, strategic planning and implementation of regenerative farm landscapes and living agricultural systems.",
+    status: "in development"
+  },
+  {
+    element: "water", kind: "hub",
+    title: "Ecological Courses",
+    blurb: "Online and infield educational modules covering multispecies living, regenerative agriculture and indigenous practices.",
+    href: "courses.html", cta: "Browse the courses"
+  },
+  {
+    element: "water", kind: "hub",
+    title: "Publications",
+    blurb: "Educational manuals, books, newsletters and video series advocating for multispecies justice.",
+    status: "in development"
+  },
+  {
+    element: "space", kind: "arm",
+    title: "Access & Membership",
+    blurb: "The infrastructure underneath everything else — what is open to all, and what membership opens.",
+    href: "courses.html#pricing", cta: "See what membership opens"
+  },
+  {
+    element: "fire", kind: "hub",
+    title: "Gatherings & Workshops",
+    blurb: "Community dining experiences, seasonal brunches, ecological events, and venue rental of the physical space.",
+    href: "#gatherings", cta: "What is coming"
+  },
+  {
+    element: "fire", kind: "hub",
+    title: "Retreats & Festivals",
+    blurb: "Immersive ecology retreats and seasonal festivals hosted across diverse ecological venues in Nepal.",
+    href: "#gatherings", cta: "What is coming"
+  },
+  {
+    element: "air", kind: "hub",
+    title: "Policy and Action",
+    blurb: "Collaborative initiatives with government bodies and urban planning entities for communal landscape projects.",
+    status: "in development"
+  },
+  {
+    element: "air", kind: "arm",
+    title: "Projects and Activism",
+    blurb: "Farmfit, and campaigning around Pancha Pranali.",
+    status: "in development"
+  }
+];
+
+function pranaliElementById(id) {
+  for (var i = 0; i < PRANALI_ELEMENTS.length; i++) {
+    if (PRANALI_ELEMENTS[i].id === id) return PRANALI_ELEMENTS[i];
+  }
+  return null;
+}
+
+function pranaliHubsFor(elementId) {
+  return PRANALI_HUBS.filter(function (h) { return h.element === elementId; });
+}
+
+/* ==========================================================================
+   Access & membership
+   --------------------------------------------------------------------------
+   The brief defines one Member tier against a Free Public tier, across four
+   content areas — not the two paid tiers this prototype first carried.
+
+   The brief names no price. $19/month billed annually at $190 is carried
+   forward from the earlier spec and still needs the CEO's confirmation.
+   ========================================================================== */
+
+var PRANALI_ACCESS = [
+  {
+    area: "Advocacy & Publications",
+    free: "Public newsletters, media clips and core manifestos",
+    member: "Full downloads of educational manuals, research papers and books"
+  },
+  {
+    area: "Courses & Learning",
+    free: "Introductory course previews and syllabus overviews",
+    member: "Unrestricted access to full infield and online learning modules"
+  },
+  {
+    area: "Events & Gatherings",
+    free: "Public event calendars and civic project summaries",
+    member: "Priority booking for dining events, seasonal retreats and festivals"
+  },
+  {
+    area: "Services & Consultations",
+    free: "Overview of consulting frameworks",
+    member: "Direct portal for consultation enquiries and project onboarding"
+  }
+];
+
+var PRANALI_PLANS = [
+  {
+    id: "member",
+    name: "Member",
     monthly: 19,
     yearly: 190,
-    categoryLimit: null,
-    summary: "Everything, all five categories, all year.",
+    summary: "Everything Pranali makes, and a seat in the room where it is argued about.",
     featured: true,
     includes: [
-      "Full access to all five course categories",
-      "Monthly live sessions with teachers",
-      "Downloadable resources, readings and recordings",
-      "Full community access, including regional circles",
-      "Early booking on in-person gatherings and retreats"
+      "Full downloads of manuals, research papers and books",
+      "Unrestricted infield and online learning modules",
+      "Priority booking for dining events, retreats and festivals",
+      "Direct portal for consultations and project onboarding",
+      "Full community access, including regional circles"
     ]
   }
 ];
+
 
 /* The one course that is always free and public — no login, no payment. */
 var PRANALI_FREE_COURSE_ID = "reading-a-field";

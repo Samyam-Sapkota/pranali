@@ -9,12 +9,14 @@
    ========================================================================== */
 
 .btn--small {
+  border-radius: var(--radius-pill);
   padding: 0.6rem 1.35rem;
   font-size: 0.73rem;
   letter-spacing: 0.12em;
 }
 
 .btn--ghost {
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--interactive);
   border: 1px solid var(--interactive);
@@ -63,6 +65,7 @@
   white-space: nowrap;
 }
 .member-badge--join {
+  border-radius: var(--radius-pill);
   border: 1px solid var(--interactive);
   color: var(--interactive);
   padding: 0.4rem 1rem;
@@ -112,6 +115,7 @@
 /* The home-page photograph carries its own typography, so it is never cropped
    — width 100%, height auto, and the words stay readable at any size. */
 .garden-band img {
+  border-radius: var(--radius-bloom);
   width: 100%;
   max-width: 1180px;
   height: auto;
@@ -164,6 +168,7 @@
 .free-section__note { margin: 0.8rem 0 0; font-size: 0.85rem; color: var(--muted); }
 
 .free-course {
+  border-radius: var(--radius-bloom);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3rem);
@@ -173,7 +178,7 @@
   padding: clamp(1rem, 2.5vw, 1.75rem);
 }
 
-.free-course__media { display: block; overflow: hidden; }
+.free-course__media { display: block; overflow: hidden; border-radius: var(--radius-soft); }
 .free-course__media img {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -183,6 +188,7 @@
 .free-course__media:hover img { transform: scale(1.03); }
 
 .free-course__flag {
+  border-radius: var(--radius-pill);
   display: inline-block;
   margin: 0 0 0.9rem;
   padding: 0.3rem 0.8rem;
@@ -233,6 +239,7 @@
 }
 
 .filter-btn {
+  border-radius: var(--radius-pill);
   display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
@@ -276,6 +283,8 @@
 }
 
 .course-card {
+  border-radius: var(--radius-bloom);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--rule);
@@ -367,6 +376,89 @@
 .pricing { border-top: 1px solid var(--rule); }
 .pricing__note { margin: 0.9rem 0 0; font-size: 0.85rem; color: var(--muted); }
 
+/* ------------------------------------------- free public vs member
+
+   The brief's four content areas, side by side. On a phone the table turns
+   into stacked blocks — a four-column grid of prose is unreadable at 375px. */
+
+.access {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.access__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.access__caption {
+  text-align: left;
+  padding-bottom: 1rem;
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--structure);
+}
+.access__table th[scope="col"] {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0 0 0.7rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--heading);
+}
+.access__table th[scope="row"] {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 1rem 1.5rem 1rem 0;
+  vertical-align: top;
+  color: var(--ink);
+  width: 30%;
+}
+.access__table td {
+  padding: 1rem 1.5rem 1rem 0;
+  vertical-align: top;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule);
+}
+.access__table tbody tr:last-child td,
+.access__table tbody tr:last-child th { border-bottom: 0; }
+.access__member { color: var(--green); }
+td.access__member { color: var(--ink-soft); background: color-mix(in srgb, var(--green) 5%, transparent); padding-left: 1rem; }
+
+@media (max-width: 900px) {
+  .access { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  /* stack each row into a labelled block */
+  .access__table, .access__table tbody, .access__table tr,
+  .access__table th, .access__table td { display: block; width: auto; }
+  .access__table thead { display: none; }
+  .access__table tr {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .access__table th[scope="row"] { padding: 0 0 0.5rem; }
+  .access__table td { border: 0; padding: 0.35rem 0 0.35rem 1.4rem; position: relative; }
+  .access__table td::before {
+    content: "Public";
+    position: absolute;
+    left: 0; top: 0.45rem;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .access__table td.access__member::before { content: "Member"; color: var(--green); }
+}
+
+.join__includes { margin-bottom: 1.6rem; }
+
 .plans {
   list-style: none;
   margin: 0 0 clamp(2.5rem, 6vw, 4rem);
@@ -377,6 +469,7 @@
 }
 
 .plan {
+  border-radius: var(--radius-bloom);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -388,6 +481,7 @@
 .plan--current  { background: var(--paper-warm); }
 
 .plan__flag {
+  border-radius: var(--radius-pill);
   position: absolute;
   top: 0; right: clamp(1.5rem, 3vw, 2.25rem);
   transform: translateY(-50%);
@@ -439,6 +533,7 @@
 }
 
 .plan__current-note {
+  border-radius: var(--radius-pill);
   margin: 0;
   padding: 0.85rem 0;
   text-align: center;
@@ -452,6 +547,7 @@
 /* ---------------------------------------------- current demo membership */
 
 .member-panel {
+  border-radius: var(--radius-bloom);
   margin-bottom: clamp(2rem, 4vw, 3rem);
   border: 1px solid var(--green);
   background: var(--paper-warm);
@@ -475,6 +571,7 @@
 /* ------------------------------------------------------------- bursary */
 
 .bursary {
+  border-radius: var(--radius-bloom);
   border: 1px solid var(--rule);
   border-left: 3px solid var(--interactive);
   background: var(--paper-warm);
@@ -500,6 +597,7 @@
    ========================================================================== */
 
 .join-dialog {
+  border-radius: var(--radius-bloom);
   width: min(560px, calc(100vw - 2rem));
   max-height: min(88vh, 900px);
   padding: 0;
@@ -560,6 +658,7 @@
 .join__hint.is-full  { color: var(--crimson); }
 
 .cat-pick {
+  border-radius: var(--radius-soft);
   display: block;
   position: relative;
   padding: 0.75rem 0.9rem 0.75rem 2.2rem;
@@ -584,6 +683,7 @@
 .join__fields { margin-bottom: 1.4rem; }
 
 .join__payment {
+  border-radius: var(--radius-soft);
   border: 1px dashed var(--rule);
   padding: 1rem 1.1rem;
   margin-bottom: 1.6rem;
@@ -665,6 +765,7 @@
 .course-hero__blurb { color: var(--ink-soft); max-width: 52ch; }
 
 .course-hero__media img {
+  border-radius: var(--radius-bloom);
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
@@ -771,6 +872,7 @@
 /* ------------------------------------------------------------- paywall */
 
 .paywall {
+  border-radius: var(--radius-bloom);
   position: relative;
   border: 1px solid var(--structure);
   background: var(--paper-warm);
@@ -841,6 +943,7 @@
 }
 
 .voice {
+  border-radius: var(--radius-bloom);
   display: flex;
   flex-direction: column;
   background: var(--paper);
@@ -908,6 +1011,7 @@
   flex: none;
 }
 .marquee__item img {
+  border-radius: var(--radius-soft);
   height: clamp(130px, 20vh, 210px);
   width: auto;
   object-fit: cover;

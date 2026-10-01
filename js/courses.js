@@ -145,12 +145,34 @@
     if (!slot) return;
 
     var member = PranaliMembership.get();
+    var plan = PRANALI_PLANS[0];
+    var current = member && member.planId === plan.id;
 
-    slot.innerHTML = PRANALI_PLANS.map(function (plan) {
-      var current = member && member.planId === plan.id;
-      return '' +
-      '<li class="plan' + (plan.featured ? ' plan--featured' : '') + (current ? ' plan--current' : '') + '">' +
-        (plan.featured ? '<p class="plan__flag">Most complete</p>' : '') +
+    /* The brief's model: one free public tier beside one member tier,
+       compared across its four content areas. */
+    var rows = PRANALI_ACCESS.map(function (a) {
+      return '<tr>' +
+               '<th scope="row">' + esc(a.area) + '</th>' +
+               '<td>' + esc(a.free) + '</td>' +
+               '<td class="access__member">' + esc(a.member) + '</td>' +
+             '</tr>';
+    }).join("");
+
+    slot.innerHTML =
+    '<div class="access">' +
+      '<table class="access__table">' +
+        '<caption class="access__caption">What is open to everyone, and what membership opens</caption>' +
+        '<thead>' +
+          '<tr>' +
+            '<td></td>' +
+            '<th scope="col">Free public</th>' +
+            '<th scope="col" class="access__member">Member</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>' +
+
+      '<div class="plan plan--featured' + (current ? ' plan--current' : '') + '">' +
         '<h3 class="plan__name">' + esc(plan.name) + '</h3>' +
         '<p class="plan__summary">' + esc(plan.summary) + '</p>' +
         '<p class="plan__price">' +
@@ -159,16 +181,13 @@
         '</p>' +
         '<p class="plan__billed">Billed annually at $' + plan.yearly + '</p>' +
         '<ul class="plan__list">' +
-          plan.includes.map(function (line) {
-            return '<li>' + esc(line) + '</li>';
-          }).join("") +
+          plan.includes.map(function (line) { return '<li>' + esc(line) + '</li>'; }).join("") +
         '</ul>' +
         (current
-          ? '<p class="plan__current-note">Your current demo plan</p>'
-          : '<button type="button" class="btn' + (plan.featured ? '' : ' btn--ghost') + '" data-join="' + esc(plan.id) + '">' +
-              'Choose ' + esc(plan.name) + '</button>') +
-      '</li>';
-    }).join("");
+          ? '<p class="plan__current-note">Your current demo membership</p>'
+          : '<button type="button" class="btn" data-join="' + esc(plan.id) + '">Become a member</button>') +
+      '</div>' +
+    '</div>';
 
     slot.addEventListener("click", function (ev) {
       var btn = ev.target.closest("[data-join]");
@@ -187,32 +206,17 @@
     var plan = pranaliPlanById(member.planId);
     slot.hidden = false;
 
-    var cats = member.categories.map(function (id) {
-      var c = pranaliCategoryById(id);
-      return c ? c.name : id;
-    });
-
     slot.innerHTML =
       '<div class="member-panel__inner">' +
         '<p class="section__label">Your demo membership</p>' +
         '<h3 class="member-panel__title">' + esc(plan ? plan.name : "Member") + '</h3>' +
-        '<p class="member-panel__cats">' +
-          (plan && plan.categoryLimit === null
-            ? "All five categories are open to you."
-            : "Open to you: " + esc(cats.join(" and "))) +
-        '</p>' +
+        '<p class="member-panel__cats">Everything on the member side of the table is open to you.</p>' +
         '<p class="member-panel__demo">This is a prototype. Nothing was charged and no account exists — ' +
           'the membership lives in this browser only, and clearing site data removes it.</p>' +
         '<div class="member-panel__actions">' +
-          (plan && plan.categoryLimit !== null
-            ? '<button type="button" class="btn btn--small btn--ghost" id="changeCats">Change my two categories</button>'
-            : '') +
           '<button type="button" class="link-plain" id="endDemo">End demo membership</button>' +
         '</div>' +
       '</div>';
-
-    var change = $("#changeCats");
-    if (change) change.addEventListener("click", function () { openJoin(member.planId, true); });
 
     var end = $("#endDemo");
     if (end) end.addEventListener("click", function () {
@@ -227,19 +231,16 @@
      password field and no card field, because a static page has nowhere safe
      to put either and a realistic-looking one would be worse than none. */
 
-  var dialog, chosenPlanId, chosenCats, editingOnly;
+  var dialog, chosenPlanId;
 
-  function openJoin(planId, editOnly) {
+  function openJoin(planId) {
     chosenPlanId = planId;
-    editingOnly = !!editOnly;
-    var member = PranaliMembership.get();
-    chosenCats = (editOnly && member) ? member.categories.slice() : [];
     buildDialog();
     dialog.showModal();
   }
 
   function buildDialog() {
-    var plan = pranaliPlanById(chosenPlanId);
+    var plan = pranaliPlanById(chosenPlanId) || PRANALI_PLANS[0];
     if (!dialog) {
       dialog = document.createElement("dialog");
       dialog.className = "join-dialog";
@@ -249,7 +250,6 @@
       });
     }
 
-    var needsCats = plan.categoryLimit !== null;
     var member = PranaliMembership.get();
 
     dialog.innerHTML = '' +
@@ -258,119 +258,54 @@
 
       '<p class="join__demo-flag">Prototype — no payment is taken and no account is created</p>' +
 
-      '<h2 class="join__title">' + (editingOnly ? "Change your categories" : esc(plan.name)) + '</h2>' +
+      '<h2 class="join__title">' + esc(plan.name) + '</h2>' +
+      '<p class="join__price">$' + plan.monthly + ' / month, billed annually at $' + plan.yearly + '</p>' +
 
-      (editingOnly ? '' :
-        '<p class="join__price">$' + plan.monthly + ' / month, billed annually at $' + plan.yearly + '</p>') +
+      '<ul class="plan__list join__includes">' +
+        plan.includes.map(function (line) { return '<li>' + esc(line) + '</li>'; }).join("") +
+      '</ul>' +
 
-      (needsCats ?
-        '<fieldset class="join__cats">' +
-          '<legend>Choose your ' + plan.categoryLimit + ' categories</legend>' +
-          '<p class="join__hint" id="catHint"></p>' +
-          PRANALI_CATEGORIES.map(function (cat) {
-            var on = chosenCats.indexOf(cat.id) !== -1;
-            return '<label class="cat-pick' + (on ? ' is-on' : '') + '">' +
-              '<input type="checkbox" value="' + esc(cat.id) + '"' + (on ? ' checked' : '') + ' />' +
-              '<span class="cat-pick__name">' + esc(cat.name) + '</span>' +
-              '<span class="cat-pick__blurb">' + esc(cat.blurb) + '</span>' +
-            '</label>';
-          }).join("") +
-        '</fieldset>'
-        : '<p class="join__all">All five categories are included — nothing to choose.</p>') +
-
-      (editingOnly ? '' :
-        '<div class="join__fields">' +
-          '<div class="field">' +
-            '<label for="joinName">Your name</label>' +
-            '<input type="text" id="joinName" autocomplete="name" placeholder="How should we call you?" value="' +
-              esc(member ? member.name : "") + '" />' +
-          '</div>' +
-          '<div class="field">' +
-            '<label for="joinEmail">Email</label>' +
-            '<input type="email" id="joinEmail" autocomplete="email" placeholder="you@example.com" value="' +
-              esc(member ? member.email : "") + '" />' +
-          '</div>' +
+      '<div class="join__fields">' +
+        '<div class="field">' +
+          '<label for="joinName">Your name</label>' +
+          '<input type="text" id="joinName" autocomplete="name" placeholder="How should we call you?" value="' +
+            esc(member ? member.name : "") + '" />' +
         '</div>' +
-        '<div class="join__payment">' +
-          '<p class="join__payment-title">Payment</p>' +
-          '<p class="join__payment-note">A real checkout would appear here, handled by a payment provider. ' +
-            'This prototype deliberately asks for no card details and no password.</p>' +
-        '</div>') +
+        '<div class="field">' +
+          '<label for="joinEmail">Email</label>' +
+          '<input type="email" id="joinEmail" autocomplete="email" placeholder="you@example.com" value="' +
+            esc(member ? member.email : "") + '" />' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="join__payment">' +
+        '<p class="join__payment-title">Payment</p>' +
+        '<p class="join__payment-note">A real checkout would appear here, handled by a payment provider. ' +
+          'This prototype deliberately asks for no card details and no password.</p>' +
+      '</div>' +
 
       '<div class="join__actions">' +
-        '<button type="button" class="btn" id="joinConfirm">' +
-          (editingOnly ? "Save categories" : "Start demo membership") +
-        '</button>' +
+        '<button type="button" class="btn" id="joinConfirm">Start demo membership</button>' +
         '<button type="button" class="link-plain" id="joinCancel">Cancel</button>' +
       '</div>' +
 
-      (editingOnly ? '' :
-        '<p class="join__bursary-note">Cannot afford this? ' +
-          '<a href="#bursary">Ask about the reduced rate</a> — it is a real option, handled by a person.</p>') +
+      '<p class="join__bursary-note">Cannot afford this? ' +
+        '<a href="#bursary">Ask about the reduced rate</a> — it is a real option, handled by a person.</p>' +
     '</form>';
 
     wireDialog(plan);
   }
 
   function wireDialog(plan) {
-    var needsCats = plan.categoryLimit !== null;
-    var confirmBtn = $("#joinConfirm", dialog);
-    var hint = $("#catHint", dialog);
-
-    function refreshHint() {
-      if (!needsCats) return;
-      var left = plan.categoryLimit - chosenCats.length;
-      if (left > 0) {
-        hint.textContent = "Choose " + left + " more.";
-        hint.className = "join__hint";
-        confirmBtn.disabled = true;
-      } else {
-        hint.textContent = "That is your " + plan.categoryLimit + ". Untick one to swap it.";
-        hint.className = "join__hint is-ready";
-        confirmBtn.disabled = false;
-      }
-    }
-
-    if (needsCats) {
-      $$(".cat-pick input", dialog).forEach(function (box) {
-        box.addEventListener("change", function () {
-          var id = box.value;
-          var at = chosenCats.indexOf(id);
-
-          if (box.checked) {
-            if (chosenCats.length >= plan.categoryLimit) {
-              box.checked = false;      // already at the limit — refuse politely
-              hint.textContent = "That is " + plan.categoryLimit + " already. Untick one first.";
-              hint.className = "join__hint is-full";
-              return;
-            }
-            if (at === -1) chosenCats.push(id);
-          } else if (at !== -1) {
-            chosenCats.splice(at, 1);
-          }
-          box.closest(".cat-pick").classList.toggle("is-on", box.checked);
-          refreshHint();
-        });
-      });
-      refreshHint();
-    }
-
     $("#joinClose", dialog).addEventListener("click", function () { dialog.close(); });
     $("#joinCancel", dialog).addEventListener("click", function () { dialog.close(); });
 
-    confirmBtn.addEventListener("click", function () {
-      if (editingOnly) {
-        PranaliMembership.setCategories(chosenCats);
-      } else {
-        var name = ($("#joinName", dialog).value || "").trim();
-        var email = ($("#joinEmail", dialog).value || "").trim();
-        PranaliMembership.subscribe({
-          planId: plan.id,
-          name: name || "Member",
-          email: email,
-          categories: chosenCats
-        });
-      }
+    $("#joinConfirm", dialog).addEventListener("click", function () {
+      PranaliMembership.subscribe({
+        planId: plan.id,
+        name: ($("#joinName", dialog).value || "").trim() || "Member",
+        email: ($("#joinEmail", dialog).value || "").trim()
+      });
       dialog.close();
       showConfirmation();
     });

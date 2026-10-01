@@ -56,13 +56,17 @@
   --section: clamp(4.5rem, 10vw, 9rem);
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* a little overshoot, for things that bloom rather than merely appear */
+  --ease-bloom: cubic-bezier(0.34, 1.32, 0.48, 1);
 
-  /* measured by js/main.js so the stage centres below the header + chooser */
+  /* organic form — the brief asks for shape transitions without harsh
+     geometric edges, so nothing on the page is a hard-cornered rectangle */
+  --radius-soft:  14px;
+  --radius-bloom: 26px;
+  --radius-pill:  100px;
+
+  /* measured by js/main.js so the mandala centres below the sticky header */
   --header-h: 72px;
-  --chooser-h: 140px;
-
-  /* how far below the header the five sit on the opening screen */
-  --chooser-top: clamp(1.25rem, 18vh, 9rem);
 }
 
 * { box-sizing: border-box; }
@@ -413,9 +417,6 @@ img { max-width: 100%; display: block; }
 .element-btn[aria-pressed="true"] .element-btn__label { opacity: 1; }
 .element-btn[aria-pressed="true"] .element-btn__dot { opacity: 1; transform: scale(1); }
 
-/* while the travelling mark is standing in for it, the real one steps aside */
-.element-btn.is-ghosted .icon-mask { opacity: 0 !important; transform: none; }
-
 /* ==========================================================================
    The left rail — switch elements from anywhere below the opening screen
    ========================================================================== */
@@ -511,33 +512,28 @@ body.rail-on .element-rail {
 }
 
 /* ==========================================================================
-   Element stage — sticky, scroll-driven
+   The spiral bloom — the hero mandala
    ========================================================================== */
 
-.stage {
+.bloom {
   position: relative;
-  height: 320vh;                 /* scroll distance for the whole sequence */
+  height: 320vh;                 /* the scroll distance the bloom plays over */
 }
 
-.stage__pin {
-  /* 0 at the top of the stage, 1 once the chooser has cleared out. Driven by
-     GSAP so the rules below stay selector-based — which means they keep
-     tracking the choice even if you change it mid-scroll. */
-  --fade: 0;
+.bloom__pin {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
-  /* centred in what is left under the header and the chooser, so the mark's
-     resting place never moves once the chooser fades away */
-  padding-top: calc(var(--header-h) + var(--chooser-h));
+  padding-top: var(--header-h);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: clamp(1rem, 3vh, 2.5rem);
 }
 
-.stage__tint {
+.bloom__tint {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 50% 45%,
@@ -547,130 +543,117 @@ body.rail-on .element-rail {
   pointer-events: none;
 }
 
-/* the chooser sits over the top of the pin and does not take part in the
-   centring, so fading it out leaves no hole */
-.stage__chooser {
-  position: absolute;
-  top: calc(var(--header-h) + var(--chooser-top));
-  left: 0;
-  right: 0;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-inline: var(--gutter);
-}
+/* --------------------------------------------------------- the mandala */
 
-/* the four you did not choose lift away, outer pair first */
-.stage__chooser .element-btn:not([aria-pressed="true"]) {
-  opacity: calc(1 - var(--fade) * var(--rate, 1.2));
-  transform: translateY(calc(var(--fade) * var(--lift, -34px)));
-}
-.stage__chooser li:nth-child(1) .element-btn,
-.stage__chooser li:nth-child(5) .element-btn { --lift: -52px; --rate: 1.7; }
-.stage__chooser li:nth-child(2) .element-btn,
-.stage__chooser li:nth-child(4) .element-btn { --lift: -42px; --rate: 1.35; }
-.stage__chooser li:nth-child(3) .element-btn { --lift: -32px; --rate: 1.1; }
-
-/* the chosen one keeps its mark (the travelling one stands in for it) but
-   loses its caption — from here on it speaks for itself */
-.stage__chooser .element-btn[aria-pressed="true"] .element-btn__label,
-.stage__chooser .element-btn[aria-pressed="true"] .element-btn__dot {
-  opacity: calc(1 - var(--fade) * 1.8);
-}
-
-.stage__chooser .elements__eyebrow,
-.stage__hint {
-  opacity: calc(1 - var(--fade) * 1.6);
-  transform: translateY(calc(var(--fade) * -18px));
-}
-
-.stage__center {
+.mandala {
   position: relative;
-  z-index: 5;          /* the travelling mark passes over the chooser */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(0.5rem, 2vh, 1.5rem);
-  /* Nothing in here is ever clickable (mark is decorative, copy is just text).
-     On wide/short viewports (a laptop, not this narrow preview pane) this box
-     sits low enough to overlap the picker row above it — without this, the
-     overlapping bit (even fully transparent) silently ate the click instead
-     of letting it reach the button underneath. */
-  pointer-events: none;
-}
-
-/* the resting place: the mark fills this box at the end of the travel */
-.stage__slot {
-  position: relative;
-  width: min(44vh, 74vw);
-  height: min(44vh, 74vw);
-  flex: none;
-  /* This box is centred and full-size from the very start, sitting over the
-     picker row before you've scrolled at all — without this it silently eats
-     clicks on Fire/Space/Water (the three nearest the middle) while Air and
-     Earth, out at the edges, stay clickable. The mark inside is decorative
-     (aria-hidden) and was never meant to be a click target. */
-  pointer-events: none;
-}
-
-/* short viewports (landscape phones, small laptops) — keep the mark and the
-   words inside the pin rather than letting them spill out of it */
-@media (max-height: 660px) {
-  .stage__slot { width: min(34vh, 46vw); height: min(34vh, 46vw); }
-  .stage__name { font-size: clamp(1.8rem, 5vw, 2.6rem); }
-  .stage__lead { font-size: 0.9rem; }
-}
-@media (max-height: 560px) {
-  .stage__slot { width: min(30vh, 34vw); height: min(30vh, 34vw); }
-  :root { --chooser-top: clamp(0.75rem, 6vh, 2rem); }
-  .stage__sanskrit { font-size: 0.95rem; }
-  .stage__name { font-size: clamp(1.35rem, 4vw, 2rem); }
-  .stage__lead { display: none; }   /* the name carries it on a letterbox screen */
-}
-
-.stage__mark {
-  position: absolute;
   z-index: 2;
+  width: min(54vh, 78vw);
+  height: min(54vh, 78vw);
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+/* the circle the four outer marks come to rest on */
+.mandala__ring {
+  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  color: var(--accent);
   opacity: 0;
-  transform-origin: 50% 50%;
-  transition: none;
-  will-change: transform;
-  pointer-events: none;   /* decorative — click-through, same reason as .stage__slot above */
+  pointer-events: none;
+  overflow: visible;
+}
+.mandala__ring circle {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
 }
 
-.stage__copy {
+.mandala__nodes {
+  position: absolute;
+  inset: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* Every node sits dead centre and is moved out by a transform, so the whole
+   mandala scales with the --mandala size alone and nothing reflows. */
+.node {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  will-change: transform, opacity;
+}
+
+.node .element-btn {
+  --icon: clamp(2.2rem, 7vh, 3.6rem);
+  padding: 0.4rem;
+}
+
+/* the spiral at the centre is Space, and it breathes while it waits */
+.node__mark--spiral {
+  display: block;
+  width: clamp(3.4rem, 11vh, 6rem);
+  height: clamp(3.4rem, 11vh, 6rem);
+  color: var(--el-accent, var(--accent));
+}
+.node__mark--spiral svg {
+  width: 100%;
+  height: 100%;
+  animation: spin-slow 42s linear infinite, breathe 7s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.78; }
+  50%      { opacity: 1; }
+}
+
+.node--space .element-btn { cursor: pointer; }
+
+/* ----------------------------------------------------------- the words */
+
+.bloom__copy {
+  position: relative;
+  z-index: 3;
   text-align: center;
-  max-width: 44ch;
+  max-width: 46ch;
   padding-inline: var(--gutter);
   opacity: 0;
 }
 
-.stage__sanskrit {
-  font-family: var(--serif);
-  font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+.bloom__sanskrit {
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
   letter-spacing: 0.04em;
   color: var(--accent);
   margin: 0 0 0.15em;
   opacity: 0.9;
 }
-.stage__name {
-  font-size: clamp(2.2rem, 7vw, 4.2rem);
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  margin: 0 0 0.3em;
+.bloom__name {
+  font-size: clamp(2.1rem, 6.5vw, 3.8rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.12em;
 }
-.stage__lead {
-  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.15rem);
+.bloom__principle {
+  font-style: italic;
+  font-size: clamp(0.98rem, 0.95rem + 0.4vw, 1.2rem);
+  color: var(--structure);
+  margin: 0 0 0.7em;
+}
+.bloom__lead {
+  font-size: clamp(0.98rem, 0.94rem + 0.35vw, 1.12rem);
   color: var(--ink-soft);
   margin: 0;
 }
 
-.stage__hint {
+.bloom__hint {
   position: absolute;
   bottom: clamp(1.25rem, 4vh, 2.5rem);
   left: 0; right: 0;
@@ -683,17 +666,43 @@ body.rail-on .element-rail {
   margin: 0;
 }
 
-/* copy cross-fade when a different element is picked */
-.stage__sanskrit,
-.stage__name,
-.stage__lead {
+/* copy cross-fade when a different element is chosen */
+.bloom__sanskrit,
+.bloom__name,
+.bloom__principle,
+.bloom__lead {
   transition: opacity 0.18s var(--ease);
 }
-.stage__copy.is-swapping .stage__sanskrit,
-.stage__copy.is-swapping .stage__name,
-.stage__copy.is-swapping .stage__lead {
+.bloom__copy.is-swapping .bloom__sanskrit,
+.bloom__copy.is-swapping .bloom__name,
+.bloom__copy.is-swapping .bloom__principle,
+.bloom__copy.is-swapping .bloom__lead {
   opacity: 0;
 }
+
+/* --------------------------------------------------- smaller viewports */
+
+@media (max-width: 700px) {
+  /* the arc fallback: the mandala widens and flattens, so the four marks
+     have room along the lower curve with the spiral above them */
+  .mandala {
+    width: min(42vh, 86vw);
+    height: min(42vh, 86vw);
+  }
+  .node .element-btn { --icon: clamp(1.9rem, 6vh, 2.8rem); }
+}
+
+@media (max-height: 660px) {
+  .mandala { width: min(42vh, 60vw); height: min(42vh, 60vw); }
+  .bloom__name { font-size: clamp(1.7rem, 5vw, 2.4rem); }
+  .bloom__lead { font-size: 0.92rem; }
+}
+@media (max-height: 560px) {
+  .mandala { width: min(34vh, 44vw); height: min(34vh, 44vw); }
+  .bloom__principle,
+  .bloom__lead { display: none; }   /* the name carries it on a letterbox screen */
+}
+
 
 /* ==========================================================================
    Sections
@@ -763,40 +772,109 @@ body.rail-on .element-rail {
   cursor: pointer;
 }
 
-.threads__grid,
 .journal__grid,
-.listing {
+.listing,
+.hubs {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.threads__grid {
+/* ---------------------------------------------------------- the pillars */
+
+.pillars__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
+  gap: clamp(1.5rem, 4vw, 2.75rem);
 }
 
-.thread {
+.pillar {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--el-accent, var(--structure));
+  border-radius: var(--radius-soft);
   background: var(--paper);
-  padding: clamp(1.4rem, 3vw, 2.2rem);
-  transition: background 0.5s var(--ease), opacity 0.5s var(--ease);
+  padding: clamp(1.4rem, 3vw, 2.25rem);
+  transition: opacity 0.5s var(--ease), background 0.5s var(--ease);
 }
-.thread__num {
-  display: block;
-  font-size: 0.72rem;
+
+.pillar__head {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  padding-bottom: clamp(1rem, 2.5vw, 1.6rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.6rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.pillar__mark {
+  --icon: clamp(2.6rem, 6vw, 3.6rem);
+  flex: none;
+  color: var(--el-accent, var(--accent));
+  opacity: 0.9;
+}
+
+.pillar__titles { min-width: 0; }
+
+.pillar__dir {
+  margin: 0 0 0.25rem;
+  font-size: 0.69rem;
+  text-transform: uppercase;
   letter-spacing: 0.22em;
   color: var(--structure);
-  margin-bottom: 1rem;
 }
-.thread h3 {
-  font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
-  margin-bottom: 0.6rem;
+.pillar__name {
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem);
+  margin: 0 0 0.2em;
 }
-.thread p { margin: 0; font-size: 0.92rem; color: var(--ink-soft); }
-.thread:hover { background: var(--paper-warm); }
+.pillar__principle {
+  margin: 0;
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 54ch;
+}
+
+/* the hubs under each pillar */
+.hubs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+}
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.hub__kind {
+  margin: 0 0 0.5rem;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+.hub__title {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0 0 0.45em;
+  color: var(--heading);
+}
+.hub__blurb {
+  margin: 0 0 0.9em;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+.hub__soon {
+  margin-top: auto;
+  font-size: 0.69rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  border: 1px dashed var(--rule);
+  border-radius: 100px;
+  padding: 0.25rem 0.75rem;
+}
+.hub .link-plain { margin-top: auto; }
 
 /* listings */
 .listing { border-top: 1px solid var(--rule); }
@@ -906,6 +984,7 @@ body.rail-on .element-rail {
   background: var(--interactive);
   color: var(--paper);
   border: 0;
+  border-radius: var(--radius-pill);
   padding: 0.85rem 2.4rem;
   font-family: var(--sans);
   font-size: 0.72rem;
@@ -961,30 +1040,21 @@ body.rail-on .element-rail {
    No-animation fallbacks
    ========================================================================== */
 
-/* Applied by JS when GSAP is unavailable or the visitor prefers reduced motion. */
-.no-motion .stage { height: auto; }
-.no-motion .stage__pin {
+/* Applied by JS when GSAP is unavailable or the visitor prefers reduced motion.
+   The mandala renders already bloomed — js/main.js seats the nodes directly —
+   so the page reads the same, just without the opening. */
+.no-motion .bloom { height: auto; }
+.no-motion .bloom__pin {
   position: static;
   height: auto;
   padding-top: 0;
-  padding-block: clamp(2rem, 6vw, 4rem);
-  gap: clamp(1.5rem, 4vw, 3rem);
+  padding-block: clamp(2.5rem, 7vw, 5rem);
 }
-.no-motion .stage__tint { opacity: 0.7; }
-.no-motion .stage__chooser {
-  position: static;
-  padding-inline: 0;
-  margin-bottom: clamp(2rem, 6vw, 4rem);
-}
-.no-motion .stage__slot {
-  width: min(34vh, 48vw);
-  height: min(34vh, 48vw);
-}
-.no-motion .stage__mark { opacity: 0.9; transform: none !important; }
-.no-motion .element-btn.is-ghosted .icon-mask { opacity: 1 !important; }
-.no-motion .stage__pin { --fade: 0; }
-.no-motion .stage__copy { opacity: 1; }
-.no-motion .stage__hint { display: none; }
+.no-motion .bloom__tint { opacity: 0.7; }
+.no-motion .mandala__ring { opacity: 1; }
+.no-motion .bloom__copy { opacity: 1; }
+.no-motion .bloom__hint { display: none; }
+.no-motion .node__mark--spiral svg { animation: none; }
 /* the rail is navigation, so it stays even with motion turned off */
 .no-motion .reveal { opacity: 1; transform: none; }
 
