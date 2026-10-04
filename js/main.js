@@ -58,12 +58,16 @@
     Centre: { x:  0, y:  0 }
   };
 
+  /* The arc seats sit on the ring itself (x^2 + y^2 = 1), spread across its
+     lower half, so the drawn circle still means something in this layout.
+     Left to right they read Earth, Water, (Space above), Fire, Air — the
+     brief's own sequence. */
   var ARC = {
-    earth: { x: -1.00, y: 0.30 },
-    water: { x: -0.52, y: 0.68 },
+    earth: { x: -0.94, y: 0.34 },
+    water: { x: -0.50, y: 0.87 },
     space: { x:  0.00, y: 0.00 },
-    fire:  { x:  0.52, y: 0.68 },
-    air:   { x:  1.00, y: 0.30 }
+    fire:  { x:  0.50, y: 0.87 },
+    air:   { x:  0.94, y: 0.34 }
   };
 
   /* the logo spiral, drawn here at display size */
@@ -420,17 +424,49 @@
     update();
   }
 
-  /* keeps the mandala centred in the space under the sticky header */
+  /* Feeds the hero's sizing the three numbers it cannot work out in CSS: how
+     tall the header is, how tall the words under the circle actually are, and
+     how far a mark reaches past the ring. The circle is then derived from
+     them, so it can never be sized into the text again. */
   function trackHeights() {
     var header = $(".site-header");
+    var pin = $(".bloom__pin");
+    var copy = $("#bloomCopy");
     if (!header) return;
+
     var set = function () {
       document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+
+      if (pin && copy) {
+        /* offsetHeight ignores opacity and transforms, so this is the real
+           laid-out height even while the copy is still faded out */
+        pin.style.setProperty("--copy-h", copy.offsetHeight + "px");
+
+        var firstNode = rows[0].buttons.length ? rows[0].buttons[0].parentNode : null;
+        if (firstNode && firstNode.offsetHeight) {
+          pin.style.setProperty("--node-over", (firstNode.offsetHeight / 2) + "px");
+        }
+      }
+
       if (window.ScrollTrigger) ScrollTrigger.refresh();
+      placeNodesIfReady();
     };
+
     set();
-    if (window.ResizeObserver) new ResizeObserver(set).observe(header);
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(set);
+      ro.observe(header);
+      if (copy) ro.observe(copy);     // the principle wraps differently by width
+    }
     window.addEventListener("resize", set);
+
+    /* webfonts land after first paint and change the text height */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(set);
+  }
+
+  function placeNodesIfReady() {
+    if (window.gsap && !reduceMotion) placeNodes();
+    else placeNodesStatic();
   }
 
   function initForm() {

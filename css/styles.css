@@ -533,6 +533,16 @@ body.rail-on .element-rail {
 
   /* the height actually available under the sticky header */
   --avail: calc(100svh - var(--header-h));
+
+  /* Measured by js/main.js, because guessing them is how the words ended up
+     on top of the bottom mark: the principle line wraps to two lines at some
+     widths and to one at others, and the fallbacks below cannot know which.
+     --copy-h   how tall the hero words actually are
+     --node-over half a mark's height, since a mark sits centred on the ring
+                 and so reaches beyond it by half of itself */
+  --copy-h: 170px;
+  --node-over: 45px;
+  --copy-gap: clamp(1.25rem, 4vh, 2.75rem);
 }
 
 .bloom__tint {
@@ -553,8 +563,17 @@ body.rail-on .element-rail {
    bottom node clear the copy band on the shortest screen in its tier, with
    the node overhang counted (a mark sits centred on the ring, so it reaches
    beyond it by half its own height). */
+/* The largest circle whose bottom mark still clears the words beneath it.
+   Derived rather than guessed: the circle is centred in --avail, so half of it
+   plus a mark's overhang plus the words plus their gap has to fit in half the
+   available height. Everything on the right is measured, so this is correct
+   for any text length, font or viewport.
+   The compass reaches a full radius downward; the arc only 0.87 of one, so it
+   is allowed a proportionally larger circle in the media query below. */
 .mandala {
-  --mandala: min(calc(var(--avail) * 0.58), 74vw);
+  --breath: 0.9rem;   /* so the mark and the words clear, not merely touch */
+  --fit: calc(var(--avail) - 2 * (var(--copy-h) + var(--node-over) + var(--copy-gap) + var(--breath)));
+  --mandala: max(7rem, min(var(--fit), 74vw));
   position: relative;
   z-index: 2;
   width: var(--mandala);
@@ -642,11 +661,15 @@ body.rail-on .element-rail {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: clamp(1.25rem, 4vh, 2.75rem);
+  bottom: var(--copy-gap);
   z-index: 3;
   margin-inline: auto;
   text-align: center;
-  max-width: 46ch;
+  /* wide enough for the longest principle ("Fluidity, grounding and clarity
+     with depth and stillness", 54 characters) to sit on one line. Centring
+     reserves the copy's height above the circle as well as below it, so every
+     wrapped line costs twice its height in circle diameter. */
+  max-width: 62ch;
   padding-inline: var(--gutter);
   opacity: 0;
 }
@@ -697,32 +720,34 @@ body.rail-on .element-rail {
 
 /* --------------------------------------------------- smaller viewports */
 
-/* Shorter viewports: the circle gives way before the words do. */
-@media (max-height: 900px) {
-  .mandala { --mandala: min(calc(var(--avail) * 0.44), 74vw); }
-}
+/* Shorter viewports drop words rather than shrink the circle to nothing;
+   --copy-h is re-measured on resize, so the circle grows back automatically. */
 @media (max-height: 780px) {
-  .mandala { --mandala: min(calc(var(--avail) * 0.40), 70vw); }
   .bloom__name { font-size: clamp(1.7rem, 5vw, 2.4rem); }
 }
-@media (max-height: 620px) {
-  .bloom__principle { display: none; }   /* the name carries it on a letterbox screen */
+@media (max-height: 700px) {
+  .bloom__principle { display: none; }   /* the name carries it on a short screen */
 }
 @media (max-height: 480px) {
   .bloom__sanskrit { display: none; }
   .bloom__name { font-size: clamp(1.3rem, 4vw, 1.8rem); }
-  /* a landscape phone has ~300px to work with: the circle gets small or the
-     bottom mark lands on the name */
-  .mandala { --mandala: min(calc(var(--avail) * 0.46), 60vw); }
   .node .element-btn { --icon: clamp(1.5rem, 5vh, 2.1rem); }
+}
+@media (max-height: 430px) {
+  /* A landscape phone has around 300px of usable height. A centred circle and
+     words underneath genuinely do not both fit, so the hero keeps the circle —
+     which is the whole point of it — and drops the words. The element's name
+     is still on the rail and in the pillars below. */
+  .bloom__copy { display: none; }
 }
 
 /* The arc fallback. Width alone is not the test: a landscape phone has the
    width for a compass and nowhere near the height. Keep this selector in step
-   with onArc() in js/main.js. Because the arc only reaches 0.68r downward it
-   can afford a larger circle than the compass can. */
+   with onArc() in js/main.js. The arc seats sit on the lower 0.87 of the ring
+   rather than a full radius below centre, so the same vertical budget buys a
+   bigger circle. */
 @media (max-width: 700px), (max-height: 620px) {
-  .mandala { --mandala: min(calc(var(--avail) * 0.60), 76vw); }
+  .mandala { --mandala: max(7rem, min(calc(var(--fit) / 0.87), 76vw)); }
   .node .element-btn { --icon: clamp(1.9rem, 6vh, 2.8rem); }
 }
 
