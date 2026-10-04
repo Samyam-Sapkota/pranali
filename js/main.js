@@ -160,13 +160,32 @@
 
     host.innerHTML = ELEMENTS.map(function (el) {
       var cards = pranaliHubsFor(el.id).map(function (h) {
-        var action = h.href
-          ? '<a class="link-plain" href="' + esc(h.href) + '">' + esc(h.cta || "Open") + '</a>'
-          : '<span class="hub__soon">' + esc(h.status || "in development") + '</span>';
+        /* A hub shows a link, or a note that it is not live yet, or neither —
+           the ones whose entries are listed below speak for themselves. Guard
+           the else branch or a hub with entries renders the word "undefined". */
+        var action = "";
+        if (h.href) {
+          action = '<a class="link-plain" href="' + esc(h.href) + '">' + esc(h.cta) + '</a>';
+        } else if (h.status) {
+          action = '<span class="hub__soon">' + esc(h.status) + '</span>';
+        }
+
+        /* Gatherings, retreats and publications live inside the hub they
+           belong to rather than in sections of their own, so each element
+           carries its own entries and nothing is repeated between them. */
+        var entries = (h.items || []).map(function (it) {
+          return '<li class="entry">' +
+                   '<p class="entry__meta">' + esc(it.meta) + '</p>' +
+                   '<h5 class="entry__title">' + esc(it.title) + '</h5>' +
+                   '<p class="entry__blurb">' + esc(it.blurb) + '</p>' +
+                 '</li>';
+        }).join("");
+
         return '<li class="hub">' +
                  '<p class="hub__kind">' + (h.kind === "arm" ? "Operational arm" : "Knowledge hub") + '</p>' +
                  '<h4 class="hub__title">' + esc(h.title) + '</h4>' +
                  '<p class="hub__blurb">' + esc(h.blurb) + '</p>' +
+                 (entries ? '<ul class="entries">' + entries + '</ul>' : '') +
                  action +
                '</li>';
       }).join("");
@@ -385,7 +404,7 @@
 
     /* gentle reveals below the hero — one trigger each, so anything already
        scrolled past still ends up visible */
-    var reveals = $$(".section__head, .intro__body, .pillar, .listing__item, .note, .join__form");
+    var reveals = $$(".section__head, .intro__body, .pillar, .join__form");
     reveals.forEach(function (node) {
       node.classList.add("reveal");
       ScrollTrigger.create({

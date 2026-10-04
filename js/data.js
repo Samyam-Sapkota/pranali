@@ -79,55 +79,90 @@ var PRANALI_HUBS = [
     element: "earth", kind: "hub",
     title: "Sustainable Product Ecosystem",
     blurb: "An e-commerce space for earth-aligned food products, organic clothing and circular home appliances.",
-    status: "in development"
+    status: "The shop is not open yet"
   },
   {
     element: "earth", kind: "hub",
     title: "Regenerate Landscape",
     blurb: "Design, strategic planning and implementation of regenerative farm landscapes and living agricultural systems.",
-    status: "in development"
+    status: "Commissions are not listed yet"
   },
   {
     element: "water", kind: "hub",
     title: "Ecological Courses",
     blurb: "Online and infield educational modules covering multispecies living, regenerative agriculture and indigenous practices.",
-    href: "courses.html", cta: "Browse the courses"
+    href: "courses.html", cta: "Browse the courses",
+    items: [
+      { meta: "Feb 2027 \u00b7 Online \u00b7 6 weeks",
+        title: "Mother Tongue Studio",
+        blurb: "A writing cohort in Nepali, Bangla, Tamil and Urdu. Translate nothing until week five." }
+    ]
   },
   {
     element: "water", kind: "hub",
     title: "Publications",
     blurb: "Educational manuals, books, newsletters and video series advocating for multispecies justice.",
-    status: "in development"
+    items: [
+      { meta: "Essay \u00b7 9 min",
+        title: "The seed is not a museum piece",
+        blurb: "On why \u201ctraditional variety\u201d is the wrong phrase for something still being invented every season." },
+      { meta: "Report \u00b7 14 min",
+        title: "Notes from a delta that keeps moving",
+        blurb: "Three villages, one embankment, and the arithmetic of who gets to stay." },
+      { meta: "Conversation \u00b7 22 min",
+        title: "What silence is for",
+        blurb: "A teacher who refuses the word \u201cmindfulness\u201d explains what she teaches instead." },
+      { meta: "Letter \u00b7 5 min",
+        title: "Writing in the language you dream in",
+        blurb: "A note to the cohort about why we are not translating anything for six weeks." }
+    ]
   },
   {
     element: "space", kind: "arm",
     title: "Access & Membership",
-    blurb: "The infrastructure underneath everything else — what is open to all, and what membership opens.",
+    blurb: "The infrastructure underneath everything else: what is open to all, and what membership opens.",
     href: "courses.html#pricing", cta: "See what membership opens"
   },
   {
     element: "fire", kind: "hub",
     title: "Gatherings & Workshops",
     blurb: "Community dining experiences, seasonal brunches, ecological events, and venue rental of the physical space.",
-    href: "#gatherings", cta: "What is coming"
+    items: [
+      { meta: "Oct 2026 \u00b7 Kathmandu Valley \u00b7 3 days",
+        title: "The Millet Table",
+        blurb: "Three days of cooking, seed exchange and argument with growers from Jumla, Bihar and the Deccan." },
+      { meta: "Jan 2027 \u00b7 Dhaka \u00b7 2 days",
+        title: "Who Pays for the Flood",
+        blurb: "An open assembly on loss, damage and delta futures. Organisers, insurers, farmers and journalists in one room." }
+    ]
   },
   {
     element: "fire", kind: "hub",
     title: "Retreats & Festivals",
     blurb: "Immersive ecology retreats and seasonal festivals hosted across diverse ecological venues in Nepal.",
-    href: "#gatherings", cta: "What is coming"
+    items: [
+      { meta: "Nov 2026 \u00b7 Brahmaputra \u00b7 6 days",
+        title: "Walking a River Backwards",
+        blurb: "A slow upstream walk with boatmen, hydrologists and two poets. Notebooks essential, opinions optional." },
+      { meta: "Dec 2026 \u00b7 Pokhara \u00b7 8 days",
+        title: "Silence Retreat: Akasha",
+        blurb: "Eight days of near-silence, breath practice and shared meals." },
+      { meta: "Mar 2027 \u00b7 Sikkim \u00b7 5 days",
+        title: "Apprentice to a Forest",
+        blurb: "Five days with herbalists and forest-dwelling families, learning what a canopy asks of the people beneath it." }
+    ]
   },
   {
     element: "air", kind: "hub",
     title: "Policy and Action",
     blurb: "Collaborative initiatives with government bodies and urban planning entities for communal landscape projects.",
-    status: "in development"
+    status: "Current collaborations are not published yet"
   },
   {
     element: "air", kind: "arm",
     title: "Projects and Activism",
     blurb: "Farmfit, and campaigning around Pancha Pranali.",
-    status: "in development"
+    status: "Campaign pages are still being written"
   }
 ];
 

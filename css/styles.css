@@ -912,6 +912,38 @@ body.rail-on .element-rail {
   font-size: 0.92rem;
   color: var(--ink-soft);
 }
+/* Gatherings, retreats and publications, inside the hub they belong to.
+   Indented off a rule rather than boxed, so a hub reads as one thing with a
+   list inside it and not as cards nested in cards. */
+.entries {
+  list-style: none;
+  margin: 0 0 1.1rem;
+  padding: 0 0 0 clamp(0.75rem, 2vw, 1.1rem);
+  border-left: 1px solid var(--rule);
+  display: grid;
+  gap: clamp(0.8rem, 2vw, 1.2rem);
+}
+.entry__meta {
+  margin: 0 0 0.2rem;
+  font-size: 0.69rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--structure);
+}
+.entry__title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0 0 0.25em;
+  color: var(--ink);
+}
+.entry__blurb {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
 .hub__soon {
   margin-top: auto;
   font-size: 0.69rem;
