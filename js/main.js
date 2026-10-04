@@ -50,6 +50,12 @@
      arc below the spiral, reading Earth · Water · (Space) · Fire · Air from
      left to right, which is the brief's own sequence.                      */
 
+  /* How far out the four marks sit, as a fraction of the ring's radius. The
+     brief's mandala places them well inside the circle rather than on it, at
+     roughly this much of the way out. Keep in step with --fit-marks in
+     css/styles.css, which reserves room using the same number. */
+  var SEAT = 0.58;
+
   var COMPASS = {
     North:  { x:  0, y: -1 },
     East:   { x:  1, y:  0 },
@@ -307,6 +313,10 @@
     return onArc() ? ARC[el.id] : COMPASS[el.direction];
   }
 
+  /* The arc needs its marks spread right out to the ring; the compass pulls
+     them in to --seat so the ring reads as a drawn circle around them. */
+  function seatScale() { return onArc() ? 1 : SEAT; }
+
   /* gentle overshoot — the "bloom" the brief asks for */
   function easeBloom(t) {
     var c = 1.70158 * 1.12;
@@ -332,9 +342,10 @@
       var local = clamp((bloom.p - i * STAGGER) / SPAN, 0, 1);
       var out = easeBloom(local);
 
+      var reach = r * seatScale();
       gsap.set(li, {
-        x: seat.x * r * out,
-        y: seat.y * r * out,
+        x: seat.x * reach * out,
+        y: seat.y * reach * out,
         scale: 0.3 + 0.7 * local,
         opacity: local
       });
@@ -347,7 +358,8 @@
     rows[0].buttons.forEach(function (btn, i) {
       var seat = seatFor(ELEMENTS[i]);
       var li = btn.parentNode;
-      li.style.transform = "translate(" + (seat.x * r) + "px," + (seat.y * r) + "px)";
+      var reach = r * seatScale();
+      li.style.transform = "translate(" + (seat.x * reach) + "px," + (seat.y * reach) + "px)";
       li.style.opacity = "1";
     });
   }

@@ -572,8 +572,13 @@ body.rail-on .element-rail {
    is allowed a proportionally larger circle in the media query below. */
 .mandala {
   --breath: 0.9rem;   /* so the mark and the words clear, not merely touch */
-  --fit: calc(var(--avail) - 2 * (var(--copy-h) + var(--node-over) + var(--copy-gap) + var(--breath)));
-  --mandala: max(7rem, min(var(--fit), 74vw));
+
+  /* Two separate limits, because the marks no longer sit on the ring: the
+     ring itself has to fit, and so do the marks at --seat of its radius plus
+     their own overhang. Whichever is smaller wins. */
+  --fit-ring: calc(var(--avail) - 2 * (var(--copy-h) + var(--copy-gap) + var(--breath)));
+  --fit-marks: calc((var(--avail) - 2 * (var(--node-over) + var(--copy-h) + var(--copy-gap) + var(--breath))) / 0.58);
+  --mandala: max(7rem, min(var(--fit-ring), var(--fit-marks), 74vw));
   position: relative;
   z-index: 2;
   width: var(--mandala);
@@ -595,9 +600,11 @@ body.rail-on .element-rail {
 }
 .mandala__ring circle {
   fill: none;
-  stroke: var(--rule);
-  stroke-width: 0.5;
-  vector-effect: non-scaling-stroke;
+  /* a drawn line, as in the brief's mandala: thin, even and black, rather
+     than the pale hairline the rest of the page uses for structure */
+  stroke: var(--ink);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;   /* 1px at any circle size */
 }
 
 .mandala__nodes {
@@ -625,16 +632,21 @@ body.rail-on .element-rail {
    an inline opacity that wins over this. */
 .node:not(.node--space) { opacity: 0; }
 
+/* Sized from the circle, not from the viewport, so the mandala keeps the
+   brief's proportions at every screen size: in that drawing each mark is
+   roughly a fifth of the circle's diameter and the spiral a little under
+   that. Tying them to vh instead left the marks at about half the weight
+   they should have. */
 .node .element-btn {
-  --icon: clamp(2.2rem, 7vh, 3.6rem);
+  --icon: clamp(1.6rem, calc(var(--mandala) * 0.17), 7rem);
   padding: 0.4rem;
 }
 
 /* the spiral at the centre is Space, and it breathes while it waits */
 .node__mark--spiral {
   display: block;
-  width: clamp(3.4rem, 11vh, 6rem);
-  height: clamp(3.4rem, 11vh, 6rem);
+  width: clamp(2.6rem, calc(var(--mandala) * 0.19), 7.5rem);
+  height: clamp(2.6rem, calc(var(--mandala) * 0.19), 7.5rem);
   color: var(--el-accent, var(--accent));
 }
 .node__mark--spiral svg {
@@ -731,7 +743,7 @@ body.rail-on .element-rail {
 @media (max-height: 480px) {
   .bloom__sanskrit { display: none; }
   .bloom__name { font-size: clamp(1.3rem, 4vw, 1.8rem); }
-  .node .element-btn { --icon: clamp(1.5rem, 5vh, 2.1rem); }
+  .node .element-btn { --icon: clamp(1.3rem, calc(var(--mandala) * 0.14), 2.1rem); }
 }
 @media (max-height: 430px) {
   /* A landscape phone has around 300px of usable height. A centred circle and
@@ -747,8 +759,10 @@ body.rail-on .element-rail {
    rather than a full radius below centre, so the same vertical budget buys a
    bigger circle. */
 @media (max-width: 700px), (max-height: 620px) {
-  .mandala { --mandala: max(7rem, min(calc(var(--fit) / 0.87), 76vw)); }
-  .node .element-btn { --icon: clamp(1.9rem, 6vh, 2.8rem); }
+  /* the arc keeps its marks out on the ring, so it is limited by them */
+  .mandala { --mandala: max(7rem, min(calc(var(--fit-marks) * 0.58 / 0.87), 76vw)); }
+  /* the arc packs five marks across the width, so they run a little smaller */
+  .node .element-btn { --icon: clamp(1.5rem, calc(var(--mandala) * 0.15), 3rem); }
 }
 
 
