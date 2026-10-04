@@ -600,6 +600,10 @@ td.access__member { color: var(--ink-soft); background: color-mix(in srgb, var(-
   border-radius: var(--radius-bloom);
   width: min(560px, calc(100vw - 2rem));
   max-height: min(88vh, 900px);
+  /* max-height without this clipped the lower part of a long dialog with no
+     way to reach it; it also gives the wheel an inner scroller to defer to */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0;
   border: 1px solid var(--structure);
   background: var(--paper);

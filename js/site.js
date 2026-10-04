@@ -166,6 +166,94 @@ var PranaliSite = (function () {
     refresh();
   }
 
+  /* ---------------------------------------------------- eased scrolling
+
+     This page is a scroll-driven piece: the mandala opens across three
+     screens. A mouse wheel moves in coarse steps, which makes that read as a
+     series of jumps rather than something unfolding, so the wheel feeds a
+     target position and the page eases toward it each frame.
+
+     Kept deliberately narrow, because hijacking scrolling is an easy way to
+     break a page:
+       - wheel only. Keyboard, scrollbar dragging, find-on-page and focus
+         scrolling all keep their native behaviour, so nothing can become
+         unreachable if this misbehaves.
+       - fine pointers only. Touch scrolling already has momentum of its own
+         and taking it over makes it worse.
+       - off entirely under prefers-reduced-motion.
+       - defers to any scrollable element under the cursor, so the dialog and
+         any inner scroller still work.
+     CSS `scroll-behavior: smooth` is still deliberately absent: it corrupts
+     ScrollTrigger.refresh(), which is why this is done here instead. */
+  function initEasedScroll() {
+    if (reduceMotion) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    var EASE = 0.14;          // fraction of the remaining distance per frame
+    var target = window.scrollY;
+    var running = false;
+    var selfScroll = false;
+
+    function maxScroll() {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    }
+
+    /* the nearest ancestor that can actually scroll in the wheel's direction */
+    function scrollerUnder(node) {
+      for (var el = node; el && el.nodeType === 1 && el !== document.body &&
+                          el !== document.documentElement; el = el.parentElement) {
+        var st = getComputedStyle(el);
+        if ((st.overflowY === "auto" || st.overflowY === "scroll") &&
+            el.scrollHeight > el.clientHeight + 1) return el;
+      }
+      return null;
+    }
+
+    function wheelPixels(ev) {
+      if (ev.deltaMode === 1) return ev.deltaY * 16;              // lines
+      if (ev.deltaMode === 2) return ev.deltaY * window.innerHeight;  // pages
+      return ev.deltaY;
+    }
+
+    function step() {
+      var diff = target - window.scrollY;
+      if (Math.abs(diff) < 0.5) {
+        running = false;
+        return;
+      }
+      selfScroll = true;
+      window.scrollTo(0, window.scrollY + diff * EASE);
+      selfScroll = false;
+      if (window.ScrollTrigger) ScrollTrigger.update();
+      window.requestAnimationFrame(step);
+    }
+
+    window.addEventListener("wheel", function (ev) {
+      if (ev.ctrlKey) return;                       // pinch zoom
+      if (scrollerUnder(ev.target)) return;         // an inner scroller owns this
+      if (maxScroll() <= 0) return;
+
+      ev.preventDefault();
+      target = Math.max(0, Math.min(target + wheelPixels(ev), maxScroll()));
+      if (!running) {
+        running = true;
+        window.requestAnimationFrame(step);
+      }
+    }, { passive: false });
+
+    /* anything that scrolls the page by other means — a keypress, the
+       scrollbar, an anchor jump — becomes the new truth */
+    window.addEventListener("scroll", function () {
+      if (!selfScroll && !running) target = window.scrollY;
+    }, { passive: true });
+
+    /* the document grows and shrinks as sections pin, so a stale target
+       could sit past the end */
+    window.addEventListener("resize", function () {
+      target = Math.max(0, Math.min(target, maxScroll()));
+    });
+  }
+
   function firstName(name) { return String(name || "Member").split(/\s+/)[0]; }
 
   function escapeHtml(str) {
@@ -178,6 +266,7 @@ var PranaliSite = (function () {
     initNav();
     initAnchors();
     initScrollNext();
+    initEasedScroll();
     renderMemberBadge();
     PranaliMembership.onChange(renderMemberBadge);
   }
