@@ -8,9 +8,12 @@
 (function () {
   "use strict";
 
-  /* The leaf itself. Sitting in the project root is fine because all three
-     pages are there too; move it and change this one line. */
-  var IMAGE = "leaf.png";
+  /* The leaf, resized for the job: it is drawn at 42-50px, so a 160px file
+     covers even a 3x display. The 500px original stays in the repo as
+     leaf.png. Change this one line to point somewhere else.
+     Every page also preloads this, so the download starts with the HTML
+     rather than waiting for this deferred script to run. */
+  var IMAGE = "images/leaf-cursor.png";
 
   /* No cursor to replace on a touch screen, and a lagging image that follows
      taps would be worse than nothing. Leave the native cursor alone too. */
@@ -35,19 +38,36 @@
     "will-change:transform;opacity:0;transition:opacity 0.3s;" +
     "width:" + SIZE + "px;height:" + SIZE + "px;";
 
-  var img = document.createElement("img");
-  img.src = IMAGE;
-  img.alt = "";
-  img.draggable = false;
-  img.style.cssText = "width:100%;height:100%;display:block;pointer-events:none;";
-  leaf.appendChild(img);
-  document.body.appendChild(leaf);
-
   var mouseX = 0, mouseY = 0;      // where the pointer actually is
   var curX   = 0, curY   = 0;      // where the leaf has got to
   var prevX  = 0, prevY  = 0;      // last point the angle was taken from
   var targetAngle = 0, curAngle = 0;
-  var started = false;
+  var started = false;             // has the pointer been seen yet
+  var ready   = false;             // has the image arrived yet
+
+  var img = document.createElement("img");
+  img.alt = "";
+  img.draggable = false;
+  img.decoding = "async";
+  img.style.cssText = "width:100%;height:100%;display:block;pointer-events:none;";
+
+  img.addEventListener("load", function () {
+    ready = true;
+    if (started) leaf.style.opacity = "1";
+  });
+
+  /* If the leaf never arrives, the page would be left with no pointer at all,
+     because the native one is already hidden. Give it back rather than strand
+     anyone with an invisible cursor. */
+  img.addEventListener("error", function () {
+    ready = false;
+    if (style.parentNode) style.parentNode.removeChild(style);
+    if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
+  });
+
+  img.src = IMAGE;
+  leaf.appendChild(img);
+  document.body.appendChild(leaf);
 
   /* Shortest way round: without wrapping the difference, going from 350 to 10
      degrees would spin the long way instead of crossing zero. */
@@ -61,7 +81,9 @@
   function snapTo(x, y) {
     mouseX = curX = prevX = x;
     mouseY = curY = prevY = y;
-    leaf.style.opacity = "1";
+    /* only show once there is something to show, or the first thing you see
+       is an empty box where the leaf will be */
+    if (ready) leaf.style.opacity = "1";
   }
 
   document.addEventListener("mousemove", function (ev) {
