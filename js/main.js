@@ -129,6 +129,13 @@
       var mask = btn.querySelector(".icon-mask");
       if (mask) paintIcon(mask, el);
 
+      /* A mark the drawing shows turned around. Only in the mandala — the
+         labelled key in the brief has it the other way up, and that is the
+         orientation the rail and the pillars use. */
+      if (inMandala && el.mandalaRotate) {
+        btn.style.setProperty("--mark-rotate", el.mandalaRotate + "deg");
+      }
+
       btn.addEventListener("click", function () {
         select(el.id, true);
         /* clicking or tapping the spiral is one of the brief's three triggers */

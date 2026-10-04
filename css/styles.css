@@ -392,8 +392,17 @@ img { max-width: 100%; display: block; }
   transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
 }
 
-.element-btn .icon-mask { opacity: 0.4; }
-.element-btn:hover .icon-mask { opacity: 0.75; transform: translateY(-3px); }
+/* --mark-rotate is set per mark by js/main.js where the drawing shows one
+   turned around; it has to be composed into every other transform on the
+   mask, or hovering would quietly straighten it. */
+.element-btn .icon-mask {
+  opacity: 0.4;
+  transform: rotate(var(--mark-rotate, 0deg));
+}
+.element-btn:hover .icon-mask {
+  opacity: 0.75;
+  transform: rotate(var(--mark-rotate, 0deg)) translateY(-3px);
+}
 
 .element-btn__label {
   font-size: clamp(0.58rem, 2.2vw, 0.7rem);
@@ -413,7 +422,10 @@ img { max-width: 100%; display: block; }
 }
 
 .element-btn[aria-pressed="true"] { color: var(--el-accent, var(--accent)); }
-.element-btn[aria-pressed="true"] .icon-mask { opacity: 1; transform: translateY(-2px); }
+.element-btn[aria-pressed="true"] .icon-mask {
+  opacity: 1;
+  transform: rotate(var(--mark-rotate, 0deg)) translateY(-2px);
+}
 .element-btn[aria-pressed="true"] .element-btn__label { opacity: 1; }
 .element-btn[aria-pressed="true"] .element-btn__dot { opacity: 1; transform: scale(1); }
 
@@ -464,14 +476,14 @@ body.rail-on .element-rail {
   transition: width 0.4s var(--ease), height 0.4s var(--ease),
               opacity 0.4s var(--ease);
 }
-.elements__row--rail .element-btn:hover .icon-mask { opacity: 0.8; transform: none; }
+.elements__row--rail .element-btn:hover .icon-mask { opacity: 0.8; transform: rotate(var(--mark-rotate, 0deg)); }
 
 .elements__row--rail .element-btn[aria-pressed="true"] {
   --icon: 2.9rem;
 }
 .elements__row--rail .element-btn[aria-pressed="true"] .icon-mask {
   opacity: 1;
-  transform: none;
+  transform: rotate(var(--mark-rotate, 0deg));
 }
 
 /* only the chosen one is named — the rail stays narrow */

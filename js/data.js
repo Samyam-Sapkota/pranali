@@ -23,10 +23,12 @@ var PRANALI_CATEGORIES = [
    Air. `num` is the source image; the CEO's own labelled key confirms the
    mapping (1 Air, 2 Fire, 3 Space, 4 Water, 5 Earth).
 
-   NOTE ON THE COMPASS: the brief's text states Earth = West and Fire = South
-   twice, but the mandala image on page 3 shows them the other way round. We
-   follow the text. If that is wrong, swap the two `direction` values here and
-   nothing else needs to change — the hero reads placement from this field.
+   NOTE ON THE COMPASS: the brief's text states Earth = West and Fire = South,
+   but the mandala drawing shows them the other way round, and the drawing is
+   what we follow — confirmed with the client. Air = North and Water = East
+   are the same in both. Swapping these two `direction` values is all it takes
+   to go back to the written version; the hero reads placement from this field
+   and nothing else depends on it.
 
    The accents tint the element surfaces only (the marks, the stage wash, the
    rail), not the site chrome, which follows the brand palette. Earth is the
@@ -37,7 +39,7 @@ var PRANALI_CATEGORIES = [
 var PRANALI_ELEMENTS = [
   {
     id: "earth", num: 5, name: "Earth", sanskrit: "पृथ्वी", roman: "Bhumi",
-    direction: "West", principle: "Equanimity, value and distribution",
+    direction: "South", principle: "Equanimity, value and distribution",
     accent: "#0f5e36", accentSoft: "#e2ece7",
     lead: "Soil, seed and belonging — land, food, and the knowledge held by the people who stay."
   },
@@ -55,7 +57,12 @@ var PRANALI_ELEMENTS = [
   },
   {
     id: "fire", num: 2, name: "Fire", sanskrit: "अग्नि", roman: "Agni",
-    direction: "South", principle: "Perception, reception and relationships",
+    direction: "West", principle: "Perception, reception and relationships",
+    /* The drawing has this mark turned around from how the labelled key on
+       page 4 shows it: the sparse side to the left, the mass up and to the
+       right. Applied in the mandala only, so the key's orientation still
+       stands everywhere else. */
+    mandalaRotate: 180,
     accent: "#a8441f", accentSoft: "#f7e6dc",
     lead: "Transformation and refusal — the heat of justice, and the courage a changing climate asks of us."
   },
