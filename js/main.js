@@ -50,11 +50,15 @@
      arc below the spiral, reading Earth · Water · (Space) · Fire · Air from
      left to right, which is the brief's own sequence.                      */
 
-  /* How far out the four marks sit, as a fraction of the ring's radius. The
-     brief's mandala places them well inside the circle rather than on it, at
-     roughly this much of the way out. Keep in step with --fit-marks in
-     css/styles.css, which reserves room using the same number. */
-  var SEAT = 0.58;
+  /* How far out the four marks sit, as a fraction of the ring's radius. Read
+     from the --seat property in css/styles.css rather than duplicated here:
+     the same number also sizes the circle, and two copies of it would drift
+     the first time one was tuned. */
+  function seat() {
+    var m = $("#mandala");
+    var v = m && parseFloat(getComputedStyle(m).getPropertyValue("--seat"));
+    return (v > 0 && v <= 1.2) ? v : 0.76;
+  }
 
   var COMPASS = {
     North:  { x:  0, y: -1 },
@@ -322,7 +326,7 @@
 
   /* The arc needs its marks spread right out to the ring; the compass pulls
      them in to --seat so the ring reads as a drawn circle around them. */
-  function seatScale() { return onArc() ? 1 : SEAT; }
+  function seatScale() { return onArc() ? 1 : seat(); }
 
   /* gentle overshoot — the "bloom" the brief asks for */
   function easeBloom(t) {

@@ -585,11 +585,18 @@ body.rail-on .element-rail {
 .mandala {
   --breath: 0.9rem;   /* so the mark and the words clear, not merely touch */
 
-  /* Two separate limits, because the marks no longer sit on the ring: the
-     ring itself has to fit, and so do the marks at --seat of its radius plus
-     their own overhang. Whichever is smaller wins. */
+  /* How far out the four marks sit, as a fraction of the ring's radius. At
+     0.76 a mark's outer edge comes to just inside the line without crossing
+     it, counting the caption under it, at every size — at 0.78 the narrower
+     circles put the top mark exactly on the stroke. js/main.js reads this same property
+     rather than keeping its own copy, so the two cannot drift apart. */
+  --seat: 0.76;
+
+  /* Two separate limits, because the marks do not sit exactly on the ring:
+     the ring itself has to fit, and so do the marks at --seat of its radius
+     plus their own overhang. Whichever is smaller wins. */
   --fit-ring: calc(var(--avail) - 2 * (var(--copy-h) + var(--copy-gap) + var(--breath)));
-  --fit-marks: calc((var(--avail) - 2 * (var(--node-over) + var(--copy-h) + var(--copy-gap) + var(--breath))) / 0.58);
+  --fit-marks: calc((var(--avail) - 2 * (var(--node-over) + var(--copy-h) + var(--copy-gap) + var(--breath))) / var(--seat));
   --mandala: max(7rem, min(var(--fit-ring), var(--fit-marks), 74vw));
   position: relative;
   z-index: 2;
@@ -772,7 +779,7 @@ body.rail-on .element-rail {
    bigger circle. */
 @media (max-width: 700px), (max-height: 620px) {
   /* the arc keeps its marks out on the ring, so it is limited by them */
-  .mandala { --mandala: max(7rem, min(calc(var(--fit-marks) * 0.58 / 0.87), 76vw)); }
+  .mandala { --mandala: max(7rem, min(calc(var(--fit-marks) * var(--seat) / 0.87), 76vw)); }
   /* the arc packs five marks across the width, so they run a little smaller */
   .node .element-btn { --icon: clamp(1.5rem, calc(var(--mandala) * 0.15), 3rem); }
 }
