@@ -26,7 +26,8 @@ var PRANALI_CATEGORIES = [
    NOTE ON THE COMPASS: the brief's text states Earth = West and Fire = South,
    but the mandala drawing shows them the other way round, and the drawing is
    what we follow — confirmed with the client. Air = North and Water = East
-   are the same in both. Swapping these two `direction` values is all it takes
+   are the same in both. `briefDirection` keeps the written version for the
+   section headings under the hero, which quote the brief's text. Swapping these two `direction` values is all it takes
    to go back to the written version; the hero reads placement from this field
    and nothing else depends on it.
 
@@ -40,24 +41,28 @@ var PRANALI_ELEMENTS = [
   {
     id: "earth", num: 5, name: "Earth", sanskrit: "पृथ्वी", roman: "Bhumi",
     direction: "South", principle: "Equanimity, value and distribution",
+    briefDirection: "West",
     accent: "#0f5e36", accentSoft: "#e2ece7",
     lead: "Soil, seed and belonging — land, food, and the knowledge held by the people who stay."
   },
   {
     id: "water", num: 4, name: "Water", sanskrit: "जल", roman: "Jal",
     direction: "East", principle: "Fluidity, grounding and clarity with depth and stillness",
+    briefDirection: "East",
     accent: "#2f6b8f", accentSoft: "#e2ecf3",
     lead: "Flow, care and memory — rivers, monsoons, and the long patience of tending something alive."
   },
   {
     id: "space", num: 3, name: "Space", sanskrit: "आकाश", roman: "Akasha",
     direction: "Centre", principle: "Whole, interconnectedness and openness for emergence",
+    briefDirection: "Centre",
     accent: "#763939", accentSoft: "#f0e7e2",
     lead: "The pause between things — silence, spirit, and the room a community needs to become itself."
   },
   {
     id: "fire", num: 2, name: "Fire", sanskrit: "अग्नि", roman: "Agni",
     direction: "West", principle: "Perception, reception and relationships",
+    briefDirection: "South",
     /* The drawing has this mark turned around from how the labelled key on
        page 4 shows it: the sparse side to the left, the mass up and to the
        right. Applied in the mandala only, so the key's orientation still
@@ -69,6 +74,7 @@ var PRANALI_ELEMENTS = [
   {
     id: "air", num: 1, name: "Air", sanskrit: "वायु", roman: "Vayu",
     direction: "North", principle: "Ideas to completion, compassion in motion",
+    briefDirection: "North",
     accent: "#4a6b76", accentSoft: "#e4edf0",
     lead: "Breath, voice and movement — language, music and everything that travels between us."
   }
@@ -695,6 +701,205 @@ function pranaliCategoryById(id) {
 function pranaliPlanById(id) {
   for (var i = 0; i < PRANALI_PLANS.length; i++) {
     if (PRANALI_PLANS[i].id === id) return PRANALI_PLANS[i];
+  }
+  return null;
+}
+
+/* ==========================================================================
+   The shop — Sustainable Product Ecosystem (Earth)
+   --------------------------------------------------------------------------
+   Demo stock until the backend supplies it. The shape is what the shop pages
+   read, so a fetch that returns objects like these is a drop-in swap.
+
+   Prices are in Nepali rupees. `image` is optional: anything without a real
+   photograph renders as a typeset plate rather than borrowing a picture of
+   something else.
+   ========================================================================== */
+
+var PRANALI_SHOP_CATEGORIES = [
+  { id: "food",     name: "Food",             blurb: "Grown, milled and dried by people we know by name." },
+  { id: "clothing", name: "Organic clothing", blurb: "Plant fibres, plant dyes, hand looms." },
+  { id: "home",     name: "Circular home",    blurb: "Things that are repaired, returned and used again." }
+];
+
+var PRANALI_PRODUCTS = [
+  /* ------------------------------------------------------------- food */
+  {
+    id: "kodo-millet-flour", category: "food",
+    name: "Kodo millet flour", unit: "1 kg", price: 420,
+    maker: "Karnali Grain Collective", origin: "Jumla, Nepal",
+    image: "images/stock/grain-field.jpg",
+    imageAlt: "A grain field at low sun, stalks catching the light",
+    blurb: "Stone-milled in small batches from rain-fed kodo. Nutty, a little bitter, and the base of a proper dhindo.",
+    details: ["Stone-milled within two weeks of packing", "Rain-fed, no synthetic inputs", "Paper bag, compostable liner"],
+    stock: 34
+  },
+  {
+    id: "heirloom-seed-kit", category: "food",
+    name: "Monsoon seed kit", unit: "12 varieties", price: 950,
+    maker: "Pranali seed library", origin: "Kathmandu Valley",
+    image: "images/stock/seeds-soil.jpg",
+    imageAlt: "Dark soil and seeds with a scoop, photographed from above",
+    blurb: "Twelve open-pollinated varieties saved from our own spiral beds — beans, gourds, amaranth, mustard and marigold.",
+    details: ["Open-pollinated, save your own next year", "Sowing notes in Nepali and English", "Return seed to the library at harvest"],
+    stock: 18
+  },
+  {
+    id: "gundruk", category: "food",
+    name: "Gundruk", unit: "200 g", price: 380,
+    maker: "Women’s group, Sindhupalchok", origin: "Sindhupalchok, Nepal",
+    image: "images/stock/vegetables.jpg",
+    imageAlt: "Bowls and heaps of fresh vegetables, chillies and roots",
+    blurb: "Fermented and sun-dried mustard and radish greens. Sour, deep, and the reason winter soup tastes of anything.",
+    details: ["Naturally fermented, no vinegar", "Sun-dried on bamboo racks", "Keeps a year, sealed and dry"],
+    stock: 40
+  },
+  {
+    id: "timur-pepper", category: "food",
+    name: "Timur pepper", unit: "100 g", price: 290,
+    maker: "Forest gatherers, Salyan", origin: "Salyan, Nepal",
+    blurb: "Wild Himalayan Sichuan pepper, hand-picked and shade-dried. Citrus first, then the tingle.",
+    details: ["Wild-harvested under a community forest plan", "Whole husks, seeds removed", "Grind just before use"],
+    stock: 52
+  },
+  {
+    id: "wild-honey", category: "food",
+    name: "Cliff-forest honey", unit: "500 g", price: 1450,
+    maker: "Chepang honey hunters", origin: "Chitwan hills, Nepal",
+    blurb: "A dark, slow honey from wild colonies, harvested once a year and never heated.",
+    details: ["Raw, unfiltered beyond a cloth", "One harvest a year, quantities vary", "Glass jar — return it for a refund"],
+    stock: 9
+  },
+  {
+    id: "jumli-marshi-rice", category: "food",
+    name: "Jumli marshi rice", unit: "2 kg", price: 760,
+    maker: "Karnali Grain Collective", origin: "Jumla, Nepal",
+    blurb: "Red rice from some of the highest paddies in the world, grown in cold water at 2,500 metres.",
+    details: ["Cold-tolerant landrace, unpolished", "Cooks in 35 minutes", "Cloth sack, reusable"],
+    stock: 26
+  },
+  {
+    id: "buckwheat", category: "food",
+    name: "Tartary buckwheat", unit: "1 kg", price: 480,
+    maker: "Mustang growers’ co-op", origin: "Mustang, Nepal",
+    blurb: "Bitter buckwheat, roasted lightly for flatbreads and porridge. A crop that asks almost nothing of the soil.",
+    details: ["Whole groats, lightly roasted", "High-altitude, rain-fed", "Paper bag"],
+    stock: 31
+  },
+  {
+    id: "seedling-tray", category: "food",
+    name: "Kitchen-garden seedlings", unit: "tray of 24", price: 650,
+    maker: "Pranali nursery", origin: "Kathmandu Valley",
+    image: "images/stock/seedlings.jpg",
+    imageAlt: "Young seedlings pushing through dark soil",
+    blurb: "Whatever the season wants planted this fortnight, raised in our nursery. Collection from the garden only.",
+    details: ["Varieties change with the season", "Collect from the Kathmandu garden", "Return the tray for the next batch"],
+    stock: 12
+  },
+
+  /* --------------------------------------------------------- clothing */
+  {
+    id: "allo-shawl", category: "clothing",
+    name: "Allo nettle shawl", unit: "180 × 70 cm", price: 4800,
+    maker: "Weavers of Sankhuwasabha", origin: "Sankhuwasabha, Nepal",
+    blurb: "Himalayan giant nettle, hand-spun and back-strap woven. Softens every year you wear it.",
+    details: ["100% allo (Girardinia) fibre", "Undyed, natural oat colour", "Hand wash cold, dry flat"],
+    stock: 7
+  },
+  {
+    id: "hemp-shirt", category: "clothing",
+    name: "Hemp work shirt", unit: "S – XL", price: 3600,
+    maker: "Studio Dhaago", origin: "Lalitpur, Nepal",
+    blurb: "A plain, heavy shirt for the garden and the city. Hemp grown without irrigation, stitched with cotton thread.",
+    details: ["Himalayan hemp, hand-loomed", "Corozo nut buttons", "Free repairs for life"],
+    stock: 15
+  },
+  {
+    id: "khadi-kurta", category: "clothing",
+    name: "Khadi kurta", unit: "S – XL", price: 2900,
+    maker: "Charkha Collective", origin: "Janakpur, Nepal",
+    blurb: "Hand-spun, hand-woven cotton, loose in the body and cool in the heat.",
+    details: ["Hand-spun organic cotton", "Indigo or undyed", "Washes softer each time"],
+    stock: 20
+  },
+  {
+    id: "madder-scarf", category: "clothing",
+    name: "Madder-dyed scarf", unit: "200 × 50 cm", price: 1900,
+    maker: "Studio Dhaago", origin: "Lalitpur, Nepal",
+    blurb: "Silk-cotton dyed in madder root and walnut hull. No two come out of the pot the same.",
+    details: ["Plant dyes only, mordanted with alum", "Each piece varies in tone", "Hand wash, dry in shade"],
+    stock: 11
+  },
+  {
+    id: "wool-socks", category: "clothing",
+    name: "Hand-knit wool socks", unit: "one size", price: 950,
+    maker: "Knitting circle, Helambu", origin: "Helambu, Nepal",
+    blurb: "Undyed highland sheep wool, knitted over a winter of evenings. Darnable, and we will show you how.",
+    details: ["Undyed local wool", "Reinforced heel", "Darning thread included"],
+    stock: 24
+  },
+
+  /* ----------------------------------------------------- circular home */
+  {
+    id: "clay-filter", category: "home",
+    name: "Terracotta water filter", unit: "18 litres", price: 3200,
+    maker: "Potters of Thimi", origin: "Bhaktapur, Nepal",
+    blurb: "Two fired-clay vessels and a ceramic candle. No electricity, no plastic, and the clay keeps the water cool.",
+    details: ["Ceramic candle replaceable", "Fired at the Thimi kilns", "Broken pieces go back to the clay"],
+    stock: 6
+  },
+  {
+    id: "copper-vessel", category: "home",
+    name: "Hammered copper vessel", unit: "1.5 litres", price: 2700,
+    maker: "Tamrakar workshop", origin: "Patan, Nepal",
+    blurb: "Hand-beaten from reclaimed copper. Dents can be hammered out at the workshop for as long as it exists.",
+    details: ["Reclaimed copper", "Re-tinning and repair offered", "Polish with lemon and ash"],
+    stock: 10
+  },
+  {
+    id: "refurb-pressure-cooker", category: "home",
+    name: "Refurbished pressure cooker", unit: "5 litres", price: 1800,
+    maker: "Repair Saturday", origin: "Kathmandu",
+    blurb: "Donated, stripped, re-gasketed and tested. A good cooker should outlive the kitchen it started in.",
+    details: ["New gasket, valve and weight", "Pressure-tested before sale", "Bring it back for parts, any time"],
+    stock: 8
+  },
+  {
+    id: "solar-dryer", category: "home",
+    name: "Solar food dryer", unit: "flat-pack", price: 6500,
+    maker: "Pranali workshop", origin: "Kathmandu Valley",
+    blurb: "A pine-and-mesh cabinet for drying greens, chillies and fruit without fuel. Assembles with a screwdriver.",
+    details: ["Untreated pine, steel mesh, glass", "Plans included so you can build the next one", "Replacement mesh sold separately"],
+    stock: 4
+  },
+  {
+    id: "compost-bin", category: "home",
+    name: "Bamboo compost bin", unit: "120 litres", price: 2200,
+    maker: "Bamboo makers, Dhading", origin: "Dhading, Nepal",
+    blurb: "Woven bamboo with a loose lid. When it finally breaks down, it goes into the compost it held.",
+    details: ["Untreated local bamboo", "Lasts three to four seasons", "Entirely compostable at end of life"],
+    stock: 14
+  },
+  {
+    id: "beeswax-wraps", category: "home",
+    name: "Beeswax cloth wraps", unit: "set of 3", price: 850,
+    maker: "Studio Dhaago offcuts", origin: "Lalitpur, Nepal",
+    blurb: "Cotton offcuts from the shirt bench, coated in local beeswax and pine resin. Instead of cling film.",
+    details: ["Made from workshop offcuts", "Rinse cool, re-wax yearly", "Compost when worn out"],
+    stock: 30
+  }
+];
+
+function pranaliProductById(id) {
+  for (var i = 0; i < PRANALI_PRODUCTS.length; i++) {
+    if (PRANALI_PRODUCTS[i].id === id) return PRANALI_PRODUCTS[i];
+  }
+  return null;
+}
+
+function pranaliShopCategoryById(id) {
+  for (var i = 0; i < PRANALI_SHOP_CATEGORIES.length; i++) {
+    if (PRANALI_SHOP_CATEGORIES[i].id === id) return PRANALI_SHOP_CATEGORIES[i];
   }
   return null;
 }

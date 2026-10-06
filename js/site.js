@@ -254,6 +254,59 @@ var PranaliSite = (function () {
     });
   }
 
+  /* ------------------------------------------------------- cart link
+     Read straight from storage rather than through PranaliCart, so pages
+     that do not load the shop script still show it. Hidden while empty. */
+  function cartCount() {
+    try {
+      var lines = JSON.parse(window.localStorage.getItem("pranali:cart") || "[]");
+      return Array.isArray(lines)
+        ? lines.reduce(function (n, l) { return n + (l && l.qty > 0 ? l.qty : 0); }, 0)
+        : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function renderCartLink() {
+    var slot = $("#memberBadge");
+    if (!slot) return;
+    var link = $("#cartLink");
+    if (!link) {
+      link = document.createElement("a");
+      link.id = "cartLink";
+      link.className = "cart-link";
+      link.href = "cart.html";
+      slot.parentNode.insertBefore(link, slot);
+    }
+    var n = cartCount();
+    link.hidden = n === 0;
+    document.body.classList.toggle("has-cart", n > 0);
+    link.innerHTML =
+      '<svg class="cart-link__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">' +
+        '<path d="M4.5 9.5h15l-1.6 9.1a1.6 1.6 0 0 1-1.6 1.4H7.7a1.6 1.6 0 0 1-1.6-1.4L4.5 9.5Z" ' +
+          'stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>' +
+        '<path d="M8.5 9.5c0-2.6 1.4-5 3.5-5s3.5 2.4 3.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>' +
+      '</svg>' +
+      '<span class="cart-link__word">Cart</span><span class="cart-link__n">' + n + '</span>';
+    link.setAttribute("aria-label", "Cart, " + n + (n === 1 ? " item" : " items"));
+
+    /* On a phone the header has no room left, so the cart rides in the menu */
+    var nav = $("#siteNav");
+    if (nav) {
+      var item = $("#navCart");
+      if (!item) {
+        item = document.createElement("a");
+        item.id = "navCart";
+        item.className = "site-nav__cart";
+        item.href = "cart.html";
+        nav.appendChild(item);
+      }
+      item.hidden = n === 0;
+      item.textContent = "Cart · " + n;
+    }
+  }
+
   function firstName(name) { return String(name || "Member").split(/\s+/)[0]; }
 
   function escapeHtml(str) {
@@ -269,6 +322,9 @@ var PranaliSite = (function () {
     initEasedScroll();
     renderMemberBadge();
     PranaliMembership.onChange(renderMemberBadge);
+    renderCartLink();
+    if (window.PranaliCart) PranaliCart.onChange(renderCartLink);
+    window.addEventListener("storage", renderCartLink);
   }
 
   return {

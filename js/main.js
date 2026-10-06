@@ -1,6 +1,6 @@
 /* ==========================================================================
    Pranali Space — the home page
-   The spiral bloom, the element rail, and the pillar list.
+   The spiral bloom, the element rail, and the section for each element.
    GSAP is optional: without it (or under reduced motion) the mandala renders
    fully bloomed and everything stays usable.
    ========================================================================== */
@@ -13,7 +13,6 @@
   var ELEMENTS = PRANALI_ELEMENTS;
 
   var DEFAULT_ID = "space";
-  var STORE_KEY = "pranali:element";
 
   /* ------------------------------------------------------------- helpers */
 
@@ -29,13 +28,6 @@
   }
 
   function byId(id) { return pranaliElementById(id); }
-
-  function readStored() {
-    try { return window.localStorage.getItem(STORE_KEY); } catch (e) { return null; }
-  }
-  function writeStored(id) {
-    try { window.localStorage.setItem(STORE_KEY, id); } catch (e) { /* private mode */ }
-  }
 
   var reduceMotion = window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -141,7 +133,7 @@
       }
 
       btn.addEventListener("click", function () {
-        select(el.id, true);
+        select(el.id, true, !inMandala);
         /* clicking or tapping the spiral is one of the brief's three triggers */
         if (inMandala && el.id === "space") openBloom();
       });
@@ -168,90 +160,157 @@
     });
   }
 
-  /* ---------------------------------------------------------- the pillars */
+  /* ----------------------------------------------------------- the realms
 
-  function renderPillars() {
-    var host = $("#pillarsList");
-    if (!host) return;
-    var esc = PranaliSite.escapeHtml;
+     One section per element under the hero. The copy is in index.html; the
+     parts that will come from the backend are drawn here. */
 
-    host.innerHTML = ELEMENTS.map(function (el) {
-      var cards = pranaliHubsFor(el.id).map(function (h) {
-        /* A hub shows a link, or a note that it is not live yet, or neither —
-           the ones whose entries are listed below speak for themselves. Guard
-           the else branch or a hub with entries renders the word "undefined". */
-        var action = "";
-        if (h.href) {
-          action = '<a class="link-plain" href="' + esc(h.href) + '">' + esc(h.cta) + '</a>';
-        } else if (h.status) {
-          action = '<span class="hub__soon">' + esc(h.status) + '</span>';
-        }
+  var esc = PranaliSite.escapeHtml;
+  var realmHost = $("#realm");
+  var realms = realmHost ? $$(".realm", realmHost) : [];
 
-        /* Gatherings, retreats and publications live inside the hub they
-           belong to rather than in sections of their own, so each element
-           carries its own entries and nothing is repeated between them. */
-        var entries = (h.items || []).map(function (it) {
-          return '<li class="entry">' +
-                   '<p class="entry__meta">' + esc(it.meta) + '</p>' +
-                   '<h5 class="entry__title">' + esc(it.title) + '</h5>' +
-                   '<p class="entry__blurb">' + esc(it.blurb) + '</p>' +
-                 '</li>';
+  function paintRealmMarks() {
+    $$("[data-mark]", realmHost).forEach(function (span) {
+      var el = byId(span.dataset.mark);
+      if (!el) return;
+      paintIcon(span, el);
+      span.style.color = el.accent;
+    });
+  }
+
+  /* Space: the other four, each with what it holds — and each a way in. */
+  function renderSpace() {
+    var list = $("#spaceCompass");
+    if (list) {
+      list.innerHTML = ELEMENTS.filter(function (el) { return el.id !== "space"; }).map(function (el) {
+        var hubs = pranaliHubsFor(el.id).map(function (h) {
+          return '<li>' + esc(h.title) + '</li>';
         }).join("");
-
-        return '<li class="hub">' +
-                 '<p class="hub__kind">' + (h.kind === "arm" ? "Operational arm" : "Knowledge hub") + '</p>' +
-                 '<h4 class="hub__title">' + esc(h.title) + '</h4>' +
-                 '<p class="hub__blurb">' + esc(h.blurb) + '</p>' +
-                 (entries ? '<ul class="entries">' + entries + '</ul>' : '') +
-                 action +
-               '</li>';
+        return '' +
+        '<li class="compass__row" style="--el-accent:' + esc(el.accent) + '">' +
+          '<span class="compass__mark icon-mask" data-compass="' + esc(el.id) + '" aria-hidden="true"></span>' +
+          '<div class="compass__name">' +
+            '<p class="compass__dir">' + esc(el.briefDirection) + '</p>' +
+            '<h4>' + esc(el.name) + '</h4>' +
+          '</div>' +
+          '<ul class="compass__hubs">' + hubs + '</ul>' +
+          '<button type="button" class="compass__go" data-go="' + esc(el.id) + '">' +
+            'Go to ' + esc(el.name) + '<span aria-hidden="true"> →</span>' +
+          '</button>' +
+        '</li>';
       }).join("");
 
-      return '' +
-      '<section class="pillar" data-element="' + esc(el.id) + '" style="--el-accent:' + esc(el.accent) + '">' +
-        '<header class="pillar__head">' +
-          '<span class="pillar__mark icon-mask" data-mark="' + esc(el.id) + '" aria-hidden="true"></span>' +
-          '<div class="pillar__titles">' +
-            '<p class="pillar__dir">' + esc(el.direction) + ' · ' + esc(el.sanskrit) + ' ' + esc(el.roman) + '</p>' +
-            '<h3 class="pillar__name">' + esc(el.name) + '</h3>' +
-            '<p class="pillar__principle">' + esc(el.principle) + '</p>' +
+      $$("[data-compass]", list).forEach(function (span) {
+        paintIcon(span, byId(span.dataset.compass));
+      });
+      list.addEventListener("click", function (ev) {
+        var go = ev.target.closest("[data-go]");
+        if (go) select(go.dataset.go, true, true);
+      });
+    }
+
+    var access = $("#spaceAccess");
+    if (access) {
+      access.innerHTML =
+        '<table class="access__table">' +
+          '<caption class="access__caption">By area</caption>' +
+          '<thead><tr><td></td><th scope="col">Free public</th><th scope="col" class="access__member">Member</th></tr></thead>' +
+          '<tbody>' + PRANALI_ACCESS.map(function (a) {
+            return '<tr><th scope="row">' + esc(a.area) + '</th>' +
+                   '<td>' + esc(a.free) + '</td>' +
+                   '<td class="access__member">' + esc(a.member) + '</td></tr>';
+          }).join("") + '</tbody>' +
+        '</table>';
+    }
+  }
+
+  /* Water: the free course, then a handful of the library. */
+  function renderWater() {
+    var free = $("#waterFree");
+    var grid = $("#waterCourses");
+    var catName = function (c) { var x = pranaliCategoryById(c.category); return x ? x.name : ""; };
+
+    var freeCourse = pranaliCourseById(PRANALI_FREE_COURSE_ID);
+    if (free && freeCourse) {
+      var href = "course.html?id=" + encodeURIComponent(freeCourse.id);
+      free.innerHTML =
+        '<article class="free-course">' +
+          '<a class="free-course__media" href="' + href + '" tabindex="-1" aria-hidden="true">' +
+            '<img src="' + esc(freeCourse.image) + '" alt="" loading="lazy" decoding="async" />' +
+          '</a>' +
+          '<div class="free-course__body">' +
+            '<p class="free-course__flag">Always free · no account, no payment</p>' +
+            '<p class="course-card__cat">' + esc(catName(freeCourse)) + '</p>' +
+            '<h4 class="free-course__title">' + esc(freeCourse.title) + '</h4>' +
+            '<p class="free-course__sub">' + esc(freeCourse.subtitle) + '</p>' +
+            '<p class="free-course__blurb">' + esc(freeCourse.blurb) + '</p>' +
+            '<div class="free-course__actions">' +
+              '<a class="btn" href="' + href + '">Start the free course</a>' +
+            '</div>' +
           '</div>' +
-        '</header>' +
-        '<ul class="hubs">' + cards + '</ul>' +
-      '</section>';
-    }).join("");
+        '</article>';
+    }
 
-    $$("[data-mark]", host).forEach(function (span) {
-      var el = byId(span.dataset.mark);
-      if (el) paintIcon(span, el);
-    });
+    if (grid) {
+      var picks = ["seed-keepers", "walking-a-watershed", "soil-beneath-argument",
+                   "monsoon-oral-histories", "millets-came-back", "spiral-and-circle"];
+      grid.innerHTML = picks.map(pranaliCourseById).filter(Boolean).map(function (c) {
+        var href = "course.html?id=" + encodeURIComponent(c.id);
+        var open = PranaliMembership.canAccess(c);
+        return '' +
+        '<li class="course-card ' + (open ? "is-open" : "is-locked") + '">' +
+          '<a class="course-card__media" href="' + href + '" tabindex="-1" aria-hidden="true">' +
+            '<img src="' + esc(c.image) + '" alt="" loading="lazy" decoding="async" />' +
+          '</a>' +
+          '<div class="course-card__body">' +
+            '<p class="course-card__cat">' + esc(catName(c)) + '</p>' +
+            '<h4 class="course-card__title"><a href="' + href + '">' + esc(c.title) + '</a></h4>' +
+            '<p class="course-card__sub">' + esc(c.subtitle) + '</p>' +
+            '<p class="course-card__meta">' + esc(c.teacher) + ' · ' + esc(c.place) + '<br />' + esc(c.duration) + '</p>' +
+            '<div class="course-card__foot">' +
+              '<span class="course-card__badge">' + (open ? "Included in your membership" : "Members only") + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</li>';
+      }).join("");
+    }
   }
 
-  /* ---------------------------------------------------------- the filter */
+  function showRealm(el, scrollTo) {
+    realms.forEach(function (r) { r.hidden = r.dataset.realm !== el.id; });
 
-  var filterNote = $("#filterNote");
-  var filterables = [];
+    var shown = realmHost && $('.realm[data-realm="' + el.id + '"]', realmHost);
+    if (shown && window.gsap && !reduceMotion) {
+      gsap.fromTo(shown, { opacity: 0, y: 18 },
+                         { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", overwrite: true });
+    }
 
-  function applyFilter(el) {
-    filterables.forEach(function (node) {
-      var tags = (node.dataset.element || "").split(/\s+/);
-      node.classList.toggle("is-dimmed", tags.indexOf(el.id) === -1);
-    });
+    /* Changing element from the rail while reading below the hero brings the
+       new section's top into view; from inside the hero, nothing moves. */
+    if (scrollTo && realmHost) {
+      var header = $(".site-header");
+      var top = realmHost.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0);
+      if (window.scrollY > top - 4) {
+        window.scrollTo({ top: Math.max(top, 0), behavior: reduceMotion ? "auto" : "smooth" });
+      }
+    }
 
-    var shown = filterables.filter(function (n) { return !n.classList.contains("is-dimmed"); }).length;
-    filterNote.innerHTML =
-      "Showing <strong>" + el.name + "</strong> — " + shown + " of " + filterables.length + " entries.";
-
-    var reset = document.createElement("button");
-    reset.type = "button";
-    reset.textContent = "Show everything";
-    reset.addEventListener("click", clearFilter);
-    filterNote.appendChild(reset);
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
   }
 
-  function clearFilter() {
-    filterables.forEach(function (n) { n.classList.remove("is-dimmed"); });
-    filterNote.textContent = "All five showing. Choose an element to narrow the page.";
+  /* The choice rides in the URL rather than in storage: a fresh visit opens
+     on Space, but Back from a product page returns to Earth. */
+  function readChoice() {
+    var id = new URLSearchParams(window.location.search).get("element");
+    return byId(id) ? id : null;
+  }
+  function writeChoice(id) {
+    try {
+      var url = new URL(window.location.href);
+      if (id === DEFAULT_ID) url.searchParams.delete("element");
+      else url.searchParams.set("element", id);
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    } catch (e) { /* file:// in some browsers */ }
   }
 
   /* ------------------------------------------------------- the hero copy */
@@ -264,7 +323,7 @@
   var current = null;
   var onSelectionChange = null;
 
-  function select(id, remember) {
+  function select(id, remember, scrollTo) {
     var el = byId(id);
     if (!el || (current && current.id === id)) return;
     current = el;
@@ -288,8 +347,8 @@
       bloomCopy.classList.remove("is-swapping");
     }, reduceMotion ? 0 : 160);
 
-    applyFilter(el);
-    if (remember) writeStored(el.id);
+    showRealm(el, scrollTo);
+    if (remember) writeChoice(el.id);
     if (onSelectionChange) onSelectionChange();
   }
 
@@ -427,7 +486,7 @@
 
     /* gentle reveals below the hero — one trigger each, so anything already
        scrolled past still ends up visible */
-    var reveals = $$(".section__head, .intro__body, .pillar, .join__form");
+    var reveals = $$(".join__intro, .join__form");
     reveals.forEach(function (node) {
       node.classList.add("reveal");
       ScrollTrigger.create({
@@ -447,7 +506,7 @@
 
   function initRail() {
     var rail = $("#elementRail");
-    var intro = $("#intro");
+    var intro = $("#realm");
     if (!rail || !intro) return;
 
     var queued = false;
@@ -524,15 +583,13 @@
   /* ---------------------------------------------------------------- boot */
 
   rows.forEach(buildRow);
-  renderPillars();
-  filterables = $$("[data-element]").filter(function (n) {
-    return !n.classList.contains("element-btn");
-  });
-  clearFilter();
+  paintRealmMarks();
+  renderSpace();
+  renderWater();
   PranaliSite.init();
   initForm();
   initRail();
   initMotion();
   trackHeights();
-  select(readStored() || DEFAULT_ID, false);
+  select(readChoice() || DEFAULT_ID, false);
 })();

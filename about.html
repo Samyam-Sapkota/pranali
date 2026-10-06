@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Course — Pranali Space</title>
-<meta name="description" content="A course at Pranali Space." />
+<title>About — Pranali Space</title>
+<meta name="description" content="Pranali Space is a South Asian platform for exploring different ways of living, learning and relating to our world." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M 50 50 A 5 5 0 0 1 40 50 A 10 10 0 0 1 60 50 A 15 15 0 0 1 30 50 A 20 20 0 0 1 70 50 A 25 25 0 0 1 20 50 A 30 30 0 0 1 80 50 A 35 35 0 0 1 10 50 A 40 40 0 0 1 90 50' fill='none' stroke='%23763939' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E" />
 <link rel="preload" as="image" href="images/leaf-cursor.png" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/pages.css" />
 <link rel="stylesheet" href="css/realms.css" />
 </head>
-<body class="page-course">
+<body class="page-about">
 
 <!-- ============================ HEADER ============================ -->
 <header class="site-header" id="top">
@@ -46,7 +46,7 @@
     </button>
 
     <nav class="site-nav" id="siteNav" aria-label="Primary">
-      <a href="about.html">About</a>
+      <a href="about.html" aria-current="page">About</a>
       <a href="index.html#bloom">Elements</a>
       <a href="courses.html">Courses</a>
       <a href="courses.html#pricing">Membership</a>
@@ -55,7 +55,55 @@
   </div>
 </header>
 
-<main id="courseRoot"><!-- rendered by js/course.js --></main>
+<main>
+
+<!-- =========================== INTRO =========================== -->
+<section class="section intro about-intro" id="intro">
+  <div class="shell intro__grid">
+    <div>
+      <p class="section__label">About</p>
+      <h1 class="section__title">What this is</h1>
+    </div>
+    <div class="intro__body">
+      <p class="lede">Pranali Space is a South Asian platform for exploring different ways of living, learning and relating to our world.</p>
+      <p>We are not an institution with a syllabus. We are a space — part courtyard, part classroom, part kitchen — where farmers, artists, elders, students, cooks, organisers and wanderers sit at the same table. Indigenous knowledge is not treated as heritage to be preserved behind glass; it is treated as a living technology for the century we are actually in.</p>
+      <p>Everything we do moves through five elements. They are not decoration. They are how we organise our questions: what we stand on, what we flow with, what we hold, what we burn for, what we breathe.</p>
+      <p class="intro__note">Choose an element on the <a class="link-plain" href="index.html#bloom">home page</a> and the page below the spiral answers in that voice.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE GARDEN ===================== -->
+<figure class="garden-band garden-band--hero">
+  <img src="images/stock/home_page_thumbnai.jpg"
+       alt="The Pranali spiral garden in Kathmandu, with people tending planted beds among city buildings" />
+  <figcaption class="shell">
+    <span class="garden-band__where">Kathmandu</span>
+    The garden the whole thing grew out of — and where most of what we teach was worked out standing up.
+    <a class="link-plain" href="courses.html">See the courses that came from it</a>
+  </figcaption>
+</figure>
+
+<!-- ========================== PILLARS ==========================
+     Seven knowledge hubs and two operational arms, under the five elemental
+     pillars. Rendered from PRANALI_HUBS in js/data.js. -->
+<section class="section pillars" id="pillars">
+  <div class="shell">
+    <header class="section__head">
+      <p class="section__label">The work, by element</p>
+      <h2 class="section__title">Five pillars, nine arms</h2>
+    </header>
+
+    <div class="pillars__list" id="pillarsList">
+      <!-- filled by js/about.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHAT OUR MEMBERS SAY ===================== -->
+<section class="section voices-section" id="voices" data-voices></section>
+
+</main>
 
 <!-- steps down through the page, one section at a time -->
 <button class="scroll-next" id="scrollNext" type="button" aria-label="Skip to the next section">
@@ -80,7 +128,7 @@
     </a>
 
     <nav class="footer__nav" aria-label="Footer">
-      <a href="about.html">About</a>
+      <a href="about.html" aria-current="page">About</a>
       <a href="index.html#bloom">Elements</a>
       <a href="courses.html">Courses</a>
       <a href="courses.html#pricing">Membership</a>
@@ -94,7 +142,8 @@
 <script src="js/data.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/site.js"></script>
-<script src="js/course.js"></script>
+<script src="js/about.js"></script>
+<script src="js/social.js"></script>
 <script src="js/cursor.js" defer></script>
 </body>
 </html>

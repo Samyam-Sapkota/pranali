@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/pages.css" />
+<link rel="stylesheet" href="css/realms.css" />
 </head>
 <body>
 
@@ -45,8 +46,8 @@
     </button>
 
     <nav class="site-nav" id="siteNav" aria-label="Primary">
-      <a href="#intro">About</a>
-      <a href="#pillars">Elements</a>
+      <a href="about.html">About</a>
+      <a href="#bloom">Elements</a>
       <a href="courses.html">Courses</a>
       <a href="courses.html#pricing">Membership</a>
       <a href="#join">Newsletter</a>
@@ -95,46 +96,387 @@
   </div>
 </section>
 
-<!-- =========================== INTRO =========================== -->
-<section class="section intro" id="intro">
-  <div class="shell intro__grid">
-    <p class="section__label">What this is</p>
-    <div class="intro__body">
-      <p class="lede">Pranali Space is a South Asian platform for exploring different ways of living, learning and relating to our world.</p>
-      <p>We are not an institution with a syllabus. We are a space — part courtyard, part classroom, part kitchen — where farmers, artists, elders, students, cooks, organisers and wanderers sit at the same table. Indigenous knowledge is not treated as heritage to be preserved behind glass; it is treated as a living technology for the century we are actually in.</p>
-      <p>Everything we do moves through five elements. They are not decoration. They are how we organise our questions: what we stand on, what we flow with, what we hold, what we burn for, what we breathe.</p>
-      <p class="intro__note">Pick an element above and the rest of this page will answer in that voice.</p>
-    </div>
-  </div>
-</section>
+<!-- ========================== THE REALMS ==========================
+     One section per element. Only the chosen one is shown — js/main.js
+     un-hides it on selection. Space is the default until someone picks
+     another. Fixed copy lives here; lists that will come from the backend
+     (products, courses, the access table) are filled by script. -->
+<div class="realms" id="realm">
 
-<!-- ===================== THE GARDEN (flagship) ===================== -->
-<figure class="garden-band garden-band--hero">
-  <img src="images/stock/home_page_thumbnai.jpg"
-       alt="The Pranali spiral garden in Kathmandu, with people tending planted beds among city buildings" />
-  <figcaption class="shell">
-    <span class="garden-band__where">Kathmandu</span>
-    The garden the whole thing grew out of — and where most of what we teach was worked out standing up.
-    <a class="link-plain" href="courses.html">See the courses that came from it</a>
-  </figcaption>
-</figure>
-
-<!-- ========================== PILLARS ==========================
-     Seven knowledge hubs and two operational arms, under the five elemental
-     pillars. Rendered from PRANALI_HUBS in js/data.js. -->
-<section class="section pillars" id="pillars">
+<!-- ------------------------------------------------------------ SPACE -->
+<section class="realm" data-realm="space" aria-labelledby="realm-space">
   <div class="shell">
-    <header class="section__head">
-      <p class="section__label">The work, by element</p>
-      <h2 class="section__title">Five pillars, nine arms</h2>
-      <p class="filter-note" id="filterNote" aria-live="polite"></p>
+    <header class="realm__head">
+      <span class="realm__mark icon-mask" data-mark="space" aria-hidden="true"></span>
+      <div>
+        <p class="realm__meta">Space · आकाश Akasha · Centre</p>
+        <h2 class="realm__title" id="realm-space">The room that holds the other four</h2>
+      </div>
     </header>
 
-    <div class="pillars__list" id="pillarsList">
-      <!-- filled by js/main.js -->
+    <div class="realm__part">
+      <div class="part__intro">
+        <p class="section__label">Access &amp; Membership</p>
+        <p class="part__lede">Space is not a hub with a programme of its own. It is what lets the rest stay open — the decisions about what anyone can walk into, and what membership opens further.</p>
+        <p class="part__text">Every element below leads somewhere public. Membership is the second door in each of them: the full manual instead of the summary, the whole course instead of its first lesson, a seat held at the table before the list opens.</p>
+      </div>
+
+      <ol class="compass" id="spaceCompass" aria-label="The five elements and what each one holds">
+        <!-- filled by js/main.js -->
+      </ol>
+    </div>
+
+    <div class="realm__part realm__part--rule">
+      <div class="part__intro part__intro--narrow">
+        <p class="section__label">Open, and open further</p>
+        <h3 class="part__title">What is public, and what membership opens</h3>
+      </div>
+      <div id="spaceAccess"><!-- filled by js/main.js --></div>
+      <p class="part__more"><a class="btn btn--ghost" href="courses.html#pricing">See membership</a></p>
     </div>
   </div>
 </section>
+
+<!-- ------------------------------------------------------------ EARTH -->
+<section class="realm" data-realm="earth" aria-labelledby="realm-earth" hidden>
+  <div class="shell">
+    <header class="realm__head">
+      <span class="realm__mark icon-mask" data-mark="earth" aria-hidden="true"></span>
+      <div>
+        <p class="realm__meta">Earth · पृथ्वी Bhumi</p>
+        <h2 class="realm__title" id="realm-earth">Equanimity, Value and Distribution</h2>
+        <p class="realm__dir">West Direction</p>
+      </div>
+    </header>
+
+    <div class="realm__part">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Sustainable Product Ecosystem</p>
+          <h3 class="part__title">Food, cloth, and things that come back</h3>
+        </div>
+        <p class="part__text">Earth-aligned food, organic clothing and circular home goods, bought from the growers, weavers and repairers who make them. Most of it is seasonal; when it runs out, it waits for next year.</p>
+      </div>
+
+      <ul class="product-grid product-grid--home" id="homeProducts" aria-label="Products">
+        <!-- filled by js/shop.js -->
+      </ul>
+      <p class="part__more"><a class="btn btn--ghost" href="shop.html">View all products</a></p>
+    </div>
+  </div>
+
+  <div class="realm__part realm__part--landscape">
+    <div class="shell">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Regenerate Landscape</p>
+          <h3 class="part__title">A farm drawn as a spiral</h3>
+        </div>
+        <p class="part__text">The garden in Kathmandu, seen from above. One continuous bed winds inward from the outer path to a small round of grass at the centre.</p>
+      </div>
+    </div>
+    <figure class="landscape">
+      <img src="images/stock/courses_pranali.jpg" loading="lazy" decoding="async"
+           alt="Aerial view of the Pranali spiral garden: one bed coiling inward, planted with many small species, two people standing at its centre" />
+    </figure>
+    <div class="shell">
+      <div class="landscape__notes">
+        <div>
+          <h4 class="landscape__h">Why a spiral</h4>
+          <p>A spiral bed is one long edge folded into a small footprint. The raised outer turns dry fastest and take the sun; the lower inner turns stay cool and hold water longer. Walk the path once and you pass through several small climates — enough to give each plant the corner it prefers.</p>
+        </div>
+        <div>
+          <h4 class="landscape__h">Many species, small plants</h4>
+          <p>Nothing here grows in a row of one. Greens, herbs, pulses, flowers and young fruit trees share the same bed, each at its own height and depth of root. Pests find less of what they want, pollinators find more, and the soil is worked by several root systems at once.</p>
+        </div>
+        <div>
+          <h4 class="landscape__h">Soil that builds itself</h4>
+          <p>No bare ground. Cut stalks are dropped where they grew, the paths are mulched, and what leaves the garden is food. Each season the beds sit a little higher and darker — the regenerative part is that the land ends the year richer than it started.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ WATER -->
+<section class="realm" data-realm="water" aria-labelledby="realm-water" hidden>
+  <div class="shell">
+    <header class="realm__head">
+      <span class="realm__mark icon-mask" data-mark="water" aria-hidden="true"></span>
+      <div>
+        <p class="realm__meta">Water · जल Jal</p>
+        <h2 class="realm__title" id="realm-water">Fluidity, Grounding and Clarity with Depth and Stillness</h2>
+        <p class="realm__dir">East Direction</p>
+      </div>
+    </header>
+
+    <div class="realm__part">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Ecological Courses</p>
+          <h3 class="part__title">Learning that happens online and in the field</h3>
+        </div>
+        <p class="part__text">Modules on multispecies living, regenerative agriculture and indigenous practice, taught by the people doing the work. Some run online over weeks; some only make sense standing in a paddy.</p>
+      </div>
+
+      <div id="waterFree"><!-- filled by js/main.js --></div>
+      <ul class="course-grid water-courses" id="waterCourses"><!-- filled by js/main.js --></ul>
+      <p class="part__more"><a class="btn btn--ghost" href="courses.html">All sixteen courses</a></p>
+    </div>
+
+    <div class="realm__part realm__part--rule">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Publications</p>
+          <h3 class="part__title">Manuals, books, letters and films</h3>
+        </div>
+        <p class="part__text">Written and filmed in support of multispecies justice. Essays and newsletters are public; manuals, research papers and books download in full for members.</p>
+      </div>
+
+      <ul class="listing pubs">
+        <li class="listing__item">
+          <p class="listing__when"><span>Field manual</span><span>84 pages</span></p>
+          <div>
+            <h4 class="listing__title">The Spiral Garden Manual</h4>
+            <p class="listing__desc">How the Kathmandu garden was laid out, planted and kept alive through its first four monsoons, with drawings you can work from.</p>
+          </div>
+          <p class="listing__tag pubs__tag--member">Members · full download</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Essay</span><span>9 min</span></p>
+          <div>
+            <h4 class="listing__title">The seed is not a museum piece</h4>
+            <p class="listing__desc">On why &ldquo;traditional variety&rdquo; is the wrong phrase for something still being invented every season.</p>
+          </div>
+          <p class="listing__tag">Public</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Film series</span><span>6 parts</span></p>
+          <div>
+            <h4 class="listing__title">Who Else Lives Here</h4>
+            <p class="listing__desc">Short films from one hectare of farmland, counting the species that share it — and asking who the farm is actually for.</p>
+          </div>
+          <p class="listing__tag">Public</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Report</span><span>14 min</span></p>
+          <div>
+            <h4 class="listing__title">Notes from a delta that keeps moving</h4>
+            <p class="listing__desc">Three villages, one embankment, and the arithmetic of who gets to stay.</p>
+          </div>
+          <p class="listing__tag">Public</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Book</span><span>212 pages</span></p>
+          <div>
+            <h4 class="listing__title">Pancha Pranali: Five Ways of Being With Land</h4>
+            <p class="listing__desc">The longer argument behind this whole space — earth, water, space, fire and air as a way of organising what we owe one another.</p>
+          </div>
+          <p class="listing__tag pubs__tag--member">Members · full download</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Letter</span><span>Monthly</span></p>
+          <div>
+            <h4 class="listing__title">The Pranali letter</h4>
+            <p class="listing__desc">What we are reading, who is teaching, what is opening. One a month, no campaigns.</p>
+          </div>
+          <p class="listing__tag"><a class="link-plain" href="#join">Subscribe</a></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------- FIRE -->
+<section class="realm" data-realm="fire" aria-labelledby="realm-fire" hidden>
+  <div class="shell">
+    <header class="realm__head">
+      <span class="realm__mark icon-mask" data-mark="fire" aria-hidden="true"></span>
+      <div>
+        <p class="realm__meta">Fire · अग्नि Agni</p>
+        <h2 class="realm__title" id="realm-fire">Perception, Reception and Relationships</h2>
+        <p class="realm__dir">South Direction</p>
+      </div>
+    </header>
+
+    <div class="realm__part">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Community Gatherings &amp; Hosting Workshops</p>
+          <h3 class="part__title">Around the same fire</h3>
+        </div>
+        <p class="part__text">Community dinners, seasonal brunches and ecological events at the garden and beyond — and the space itself, when you need somewhere to gather your own people.</p>
+      </div>
+
+      <ul class="listing">
+        <li class="listing__item">
+          <p class="listing__when"><span>Sat 24 Oct 2026</span><span>Kathmandu garden</span></p>
+          <div>
+            <h4 class="listing__title">Harvest brunch</h4>
+            <p class="listing__desc">A long late-morning table at the end of the rice harvest. Whatever came out of the spiral beds that week, cooked by whoever turns up early.</p>
+          </div>
+          <p class="listing__tag">Seasonal brunch</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Oct 2026 · 3 days</span><span>Kathmandu Valley</span></p>
+          <div>
+            <h4 class="listing__title">The Millet Table</h4>
+            <p class="listing__desc">Three days of cooking, seed exchange and argument with growers from Jumla, Bihar and the Deccan.</p>
+          </div>
+          <p class="listing__tag">Workshop</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Every new moon</span><span>Kathmandu garden</span></p>
+          <div>
+            <h4 class="listing__title">Dark-sky supper</h4>
+            <p class="listing__desc">A community dinner with the lights off and the fire lit. Bring one dish and one question you have been carrying.</p>
+          </div>
+          <p class="listing__tag">Community dining</p>
+        </li>
+        <li class="listing__item">
+          <p class="listing__when"><span>Jan 2027 · 2 days</span><span>Dhaka</span></p>
+          <div>
+            <h4 class="listing__title">Who Pays for the Flood</h4>
+            <p class="listing__desc">An open assembly on loss, damage and delta futures. Organisers, insurers, farmers and journalists in one room.</p>
+          </div>
+          <p class="listing__tag">Ecological event</p>
+        </li>
+      </ul>
+
+      <div class="venue">
+        <figure class="venue__media">
+          <img src="images/stock/shared-table.jpg" loading="lazy" decoding="async"
+               alt="A table laid with many shared dishes, bowls and plates seen from above" />
+        </figure>
+        <div class="venue__text">
+          <p class="section__label">Venue</p>
+          <h4 class="venue__title">Host your own gathering here</h4>
+          <p>The garden, the covered kitchen and the long room are available for workshops, small celebrations and meetings that would rather not happen under strip lights.</p>
+          <dl class="venue__facts">
+            <div><dt>Seated</dt><dd>up to 40</dd></div>
+            <div><dt>In the garden</dt><dd>up to 80</dd></div>
+            <div><dt>Kitchen</dt><dd>wood fire and gas</dd></div>
+          </dl>
+          <a class="btn btn--ghost" href="mailto:hello@pranali.space?subject=Venue%20enquiry">Ask about dates</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="realm__part realm__part--rule">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Retreats &amp; Festivals</p>
+          <h3 class="part__title">Further out, for longer</h3>
+        </div>
+        <p class="part__text">Immersive ecology retreats and seasonal festivals in different landscapes across Nepal and its neighbours. Members are offered places before the list opens.</p>
+      </div>
+
+      <ul class="retreats">
+        <li class="retreat">
+          <img src="images/stock/valley-mist.jpg" loading="lazy" decoding="async" alt="Mist moving through a green river valley at dawn" />
+          <p class="retreat__when">Nov 2026 · Brahmaputra · 6 days</p>
+          <h4 class="retreat__title">Walking a River Backwards</h4>
+          <p class="retreat__blurb">A slow upstream walk with boatmen, hydrologists and two poets. Notebooks essential, opinions optional.</p>
+        </li>
+        <li class="retreat">
+          <img src="images/stock/meditation.jpg" loading="lazy" decoding="async" alt="A person seated in meditation against low sun" />
+          <p class="retreat__when">Dec 2026 · Pokhara · 8 days</p>
+          <h4 class="retreat__title">Silence Retreat: Akasha</h4>
+          <p class="retreat__blurb">Eight days of near-silence, breath practice and shared meals beside the lake.</p>
+        </li>
+        <li class="retreat">
+          <img src="images/stock/forest-walk.jpg" loading="lazy" decoding="async" alt="A raised wooden walkway leading into dense forest" />
+          <p class="retreat__when">Mar 2027 · Sikkim · 5 days</p>
+          <h4 class="retreat__title">Apprentice to a Forest</h4>
+          <p class="retreat__blurb">Five days with herbalists and forest-dwelling families, learning what a canopy asks of the people beneath it.</p>
+        </li>
+        <li class="retreat">
+          <img src="images/stock/gathering.jpg" loading="lazy" decoding="async" alt="A crowd gathered under strings of warm lights at an outdoor evening event" />
+          <p class="retreat__when">Apr 2027 · Kathmandu Valley · 2 nights</p>
+          <h4 class="retreat__title">Seed &amp; Song</h4>
+          <p class="retreat__blurb">A spring festival for the new sowing — seed swaps by day, music under the lights by night.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------------- AIR -->
+<section class="realm" data-realm="air" aria-labelledby="realm-air" hidden>
+  <div class="shell">
+    <header class="realm__head">
+      <span class="realm__mark icon-mask" data-mark="air" aria-hidden="true"></span>
+      <div>
+        <p class="realm__meta">Air · वायु Vayu</p>
+        <h2 class="realm__title" id="realm-air">Ideas to Completion, Compassion in Motion</h2>
+        <p class="realm__dir">North Direction</p>
+      </div>
+    </header>
+
+    <div class="realm__part">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Policy and Action</p>
+          <h3 class="part__title">Working with the people who draw the maps</h3>
+        </div>
+        <p class="part__text">Collaborations with local government and urban planners on landscapes held in common. Slow work, mostly meetings — and the only way a garden becomes a policy.</p>
+      </div>
+
+      <ul class="actions">
+        <li class="action">
+          <p class="action__state">In conversation</p>
+          <h4 class="action__title">Courtyard commons</h4>
+          <p>Turning neglected ward courtyards into shared food gardens, with residents holding the keys and the municipality holding the water connection.</p>
+        </li>
+        <li class="action">
+          <p class="action__state">Pilot · 3 schools</p>
+          <h4 class="action__title">A spiral at every school</h4>
+          <p>A small spiral bed in each schoolyard, planted and kept by students, with a term of lessons that starts in the soil rather than the textbook.</p>
+        </li>
+        <li class="action">
+          <p class="action__state">Proposal</p>
+          <h4 class="action__title">Mapping the valley&rsquo;s springs</h4>
+          <p>A shared map of the springs and stone spouts still running in the valley, so that planning decisions can see the water they would bury.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="realm__part realm__part--rule">
+      <div class="part__intro part__intro--split">
+        <div>
+          <p class="section__label">Projects and Activism</p>
+          <h3 class="part__title">Ideas carried until they are done</h3>
+        </div>
+        <p class="part__text">Our own campaigns: one about bodies and land, one about the five elements themselves.</p>
+      </div>
+
+      <div class="campaigns">
+        <article class="campaign">
+          <figure class="campaign__media">
+            <img src="images/stock/yoga-group.jpg" loading="lazy" decoding="async" alt="A group practising a standing balance posture together outdoors at dawn" />
+          </figure>
+          <div class="campaign__text">
+            <h4 class="campaign__title">Farmfit</h4>
+            <p>Fitness where the workout is the farm&rsquo;s work: digging, carrying, turning compost, planting out. You leave tired, the beds are done, and nobody paid for a gym.</p>
+            <p class="campaign__soon">Campaign page coming</p>
+          </div>
+        </article>
+        <article class="campaign">
+          <figure class="campaign__media">
+            <img src="images/stock/spiral-field.jpg" loading="lazy" decoding="async" alt="Green hillside with a wide spiral pattern cut into the grass" />
+          </figure>
+          <div class="campaign__text">
+            <h4 class="campaign__title">Pancha Pranali</h4>
+            <p>Earth, water, space, fire and air as a public argument: talks, wall drawings and small actions asking what a city would look like if it answered to all five.</p>
+            <p class="campaign__soon">Campaign page coming</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
 
 <!-- ============================ JOIN ============================ -->
 <section class="section join" id="join">
@@ -197,8 +539,8 @@
     </a>
 
     <nav class="footer__nav" aria-label="Footer">
-      <a href="#intro">About</a>
-      <a href="#pillars">Elements</a>
+      <a href="about.html">About</a>
+      <a href="#bloom">Elements</a>
       <a href="courses.html">Courses</a>
       <a href="courses.html#pricing">Membership</a>
       <a href="#join">Newsletter</a>
@@ -213,6 +555,7 @@
 <script src="js/data.js" defer></script>
 <script src="js/auth.js" defer></script>
 <script src="js/site.js" defer></script>
+<script src="js/shop.js" defer></script>
 <script src="js/main.js" defer></script>
 <script src="js/social.js" defer></script>
 <script src="js/cursor.js" defer></script>
